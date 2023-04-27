@@ -21,8 +21,17 @@
                 <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Username</label>
             </div>
             <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
+                <input id="email" maxlength="50" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
+                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">E-mail</label>
+            </div>
+            <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
                 <input id="password" type="password" maxlength="25" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
                 <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Password</label>
+            </div>
+            <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
+                <input onkeyup="falseRepeat()" id="passwordRepeat" type="password" maxlength="25" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
+                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Password again</label>
+                <label id="falseRepeat" class="absolute right-[0.75rem] top-0 text-[1.4rem] font-normal px-[0.25rem] bg-white"></label>
             </div>
             <button type="button" onclick="signIn()" class="w-[100%] h-[3.5rem] mt-[2.5rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
                 SIGN IN
