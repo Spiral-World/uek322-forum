@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY (id),
     UNIQUE (email)
 );
-`
+`;
 
 const POSTS_TABLE = `
 CREATE TABLE IF NOT EXISTS posts (
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS posts (
     PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES users(id)
 );
-`
+`;
 
 const LIKES_TABLE = `
 CREATE TABLE IF NOT EXISTS likes (
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS likes (
     FOREIGN KEY (userid) REFERENCES users(id),
     FOREIGN KEY (postid) REFERENCES posts(id)
 );
-`
+`;
 
 const COMMENTS_TABLE = `
 CREATE TABLE IF NOT EXISTS comments (
@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY (userid) REFERENCES users(id),
     FOREIGN KEY (postid) REFERENCES posts(id)
 );
-`
+`;
 
-export { USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE }
+export {
+  USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE,
+};

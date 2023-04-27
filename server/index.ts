@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express'
-import { API } from './api'
+import { WebSocketServer } from './websocketserverdirectory'
 import http from 'http'
 import { resolve, dirname } from 'path'
 import { Database } from './database'
@@ -7,7 +7,7 @@ import { Database } from './database'
 class Backend {
   // Properties
   private _app: Express
-  private _api: API
+  private _WebSocketServer: WebSocketServer
   private _database: Database
   private _env: string
 
@@ -16,8 +16,8 @@ class Backend {
     return this._app
   }
 
-  public get api(): API {
-    return this._api
+  public get webSocketServer(): WebSocketServer {
+    return this._WebSocketServer
   }
 
   public get database(): Database {
@@ -28,7 +28,7 @@ class Backend {
   constructor() {
     this._app = express()
     this._database = new Database()
-    this._api = new API(this._app)
+    this._WebSocketServer = new WebSocketServer(this._app)
     this._env = process.env.NODE_ENV || 'development'
 
     this.setupStaticFiles()

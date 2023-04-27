@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import { VitePluginNode } from 'vite-plugin-node'
 
+// websocket changes SOURCE: https://vitejs.dev/config/server-options.html#server-hmr
+
 export default defineConfig({
   root: '.',
   optimizeDeps: {
@@ -8,10 +10,13 @@ export default defineConfig({
   },
   server: {
     port: 4200,
+    strictPort: true,
     hmr: {
       protocol: 'ws',
       host: 'localhost',
       port: 24678,
+      clientPort: 24678,
+      overlay: false,
     },
   },
   build: {
