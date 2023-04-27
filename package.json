@@ -4,6 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Spiral-World/uek322-forum"
+  },
   "scripts": {
     "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\"",
     "dev:server": "vite",
