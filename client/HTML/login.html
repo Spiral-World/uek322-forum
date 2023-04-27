@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" class="h-[100%] w-[100%]">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bushido</title>
+    <link rel="stylesheet" href="../CSS/style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../JS/client.js"></script>
+    <title>Typescript Starter</title>
+</head>
+<body class="h-[100%] w-[100%]">
+    <div class="pt-[1rem] px-[1.5rem] w-[100%] max-w-[25.5rem] text-center m-auto">
+        <div class="bg-[url('../materials/logoTest.png')] bg-cover mr-auto ml-auto w-[10rem] h-[10rem] mb-[2.5rem]"></div>
+        <h1 class="text-[2rem] leading-[1.5] mt-0 mb-[0.5rem] font-medium">Bushi<span class="text-[rgb(252,39,128)] text-[2.5rem]">3ch</span></h1>
+        <p class="text-[1rem] mb-[3rem] text-[rgb(112,117,121)]">Please enter your login information</p>
+        <form class="min-h-[12rem] block">
+            <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
+                <input id="username" maxlength="30" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
+                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Username</label>
+            </div>
+            <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
+                <input id="password" type="password" maxlength="25" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
+                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Password</label>
+            </div>
+            <button type="button" onclick="login()" class="w-[100%] h-[3.5rem] mt-[2.5rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
+                LOG IN
+            </button>
+            <button onclick="javascript:window.history.back(-1);return false;" class="w-[100%] h-[3.5rem] mt-[2.5rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
+                CANCEL
+            </button>
+        </form>
+    </div>
+    <script src="../JS/LoginLogoutSignin.js"></script>
+    <script src="../JS/alerts.js"></script>
+</body>
