@@ -18,7 +18,7 @@
         <form class="min-h-[12rem] block">
             <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
                 <input id="username" maxlength="30" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
-                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Username</label>
+                <label class="absolute left-[0.75rem] top-0 text-[1.4rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Username or E-mail</label>
             </div>
             <div class="relative mb-[1.5rem] h-[3.375rem] cursor-pointer">
                 <input id="password" type="password" maxlength="25" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2">
@@ -27,10 +27,10 @@
             <button type="button" onclick="login()" class="w-[100%] h-[3.5rem] mt-[2.5rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
                 LOG IN
             </button>
-            <button onclick="javascript:window.history.back(-1);return false;" class="w-[100%] h-[3.5rem] mt-[2.5rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
-                CANCEL
-            </button>
         </form>
+        <button onclick="javascript:window.history.back(-1);return false;" class="w-[100%] h-[3.5rem] mt-[1rem] mb-[0.25rem] bg-[rgba(0,0,0,0)] text-[2rem] hover:bg-[rgba(252,39,128,0.4)]">
+            CANCEL
+        </button>
     </div>
     <script src="../JS/LoginLogoutSignin.js"></script>
     <script src="../JS/alerts.js"></script>
