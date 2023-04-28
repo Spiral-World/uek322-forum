@@ -1,6 +1,6 @@
 import mariadb from 'mariadb'
 import { Pool } from 'mariadb'
-import { USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE, ROLES_TABLE } from './schema'
+import { USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE, ROLES_TABLE, ROLES_TABLE_CONTENT1, ROLES_TABLE_CONTENT2, ROLES_TABLE_CONTENT3 } from './schema'
 
 export class Database {
   // Properties
@@ -19,11 +19,15 @@ export class Database {
   // Methods
   private initializeDBSchema = async () => {
     console.log('Initializing DB schema...')
+    // users depends on roles, post depends on users and likes and comments depend on user and post
+    await this.executeSQL(ROLES_TABLE)
+    await this.executeSQL(ROLES_TABLE_CONTENT1)
+    await this.executeSQL(ROLES_TABLE_CONTENT2)
+    await this.executeSQL(ROLES_TABLE_CONTENT3)
     await this.executeSQL(USER_TABLE)
     await this.executeSQL(POSTS_TABLE)
     await this.executeSQL(LIKES_TABLE)
     await this.executeSQL(COMMENTS_TABLE)
-    await this.executeSQL(ROLES_TABLE)
   }
 
   public executeSQL = async (query: string) => {
@@ -33,7 +37,7 @@ export class Database {
       conn.end()
       return res
     } catch (err) {
-      console.log(err)
+      //console.log(err)
     }
   }
 

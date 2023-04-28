@@ -1,8 +1,9 @@
 import { Request, Response, Express } from 'express'
 import { User } from '../database'
 
-const jwt = require("jsonwebtoken");
-const bcrypt = require('bcrypt');
+import jwt from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken'
+import * as bcrypt from 'bcrypt';
 
 export class API {
   // Properties
@@ -13,24 +14,54 @@ export class API {
 
   // Constructor
   constructor(app: Express, User: User) {
-    this.app = app
-    this.user = User
-    this.app.get('/Login', this.login)
-    this.app.get('/Register', this.register)
+    this.app = app;
+    this.user = User;
+
+    this.app.get('/api/Healthcheck', (req: Request, res: Response) => res.status(200).send('Alive'));
+
+    this.app.post('/api/Login', this.login)
+    this.app.post('/api/Register', this.register)
   }
 
+  private async hashPassword(password: string) {
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    return hash
+  }
+
+  // JWT
+  createToken(id) {
+    const token = jwt.sign({ id }, this.SECRET, {
+      expiresIn: 7200000,
+    });
+    return token;
+  };
+  
   // Methods
   private async login(req: Request, res: Response) {
+    try {
+
+      const aUser = await this.user.getOneUsers(req.body.email);
+
+      if (!aUser && aUser.passwdhash == this.hashPassword(req.body.password)) {
+
+      }
+
+    } catch(e) {
+      console.log(e)
+    }
+    console.log(req.body)
+    res.status(200).json(req.body)
+    /*
     req.body.password
 
     const aUser = await this.user.getOneUsers(req.body.email);
-
     if (aUser.passwdhash = password) {
 
     }
-    
+
     this.createToken(name)
-    res.status(200).json()
+    */
   }
 
   private async register(req: Request, res: Response) {
@@ -41,11 +72,9 @@ export class API {
     res.send('Hello There!')
   }
 
-  // JWT
-  createToken(id) {
-    const token = jwt.sign({ id }, this.SECRET, {
-      expiresIn: 7200000,
-    });
-    return token;
-  };
+  async deleteUser() {
+
+  }
+
+
 }
