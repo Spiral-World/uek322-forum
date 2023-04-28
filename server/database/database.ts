@@ -1,6 +1,6 @@
 import mariadb from 'mariadb'
 import { Pool } from 'mariadb'
-import { USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE } from './schema'
+import { USER_TABLE, POSTS_TABLE, LIKES_TABLE, COMMENTS_TABLE, ROLES_TABLE } from './schema'
 
 export class Database {
   // Properties
@@ -23,6 +23,7 @@ export class Database {
     await this.executeSQL(POSTS_TABLE)
     await this.executeSQL(LIKES_TABLE)
     await this.executeSQL(COMMENTS_TABLE)
+    await this.executeSQL(ROLES_TABLE)
   }
 
   public executeSQL = async (query: string) => {
@@ -35,4 +36,13 @@ export class Database {
       console.log(err)
     }
   }
+
+  preventSQLInjection(text: string) {
+    const onlyLettersPattern = /^[A-Za-z0-9]+$/;
+    if (!text.match(onlyLettersPattern)) {
+      return null
+    }
+    return text
+  }
+
 }

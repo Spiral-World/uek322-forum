@@ -1,23 +1,33 @@
 //SOURCE: https://typescript.helpful.codes/tutorials/express/Using-WebSocket-with-Express/
+/*
+import * as WebSocket from 'ws';
 
-import expressWs from 'express-ws';
-import WebSocket from 'ws';
+const jwt = require("jsonwebtoken");
 
 export class WebSocketServer {
   // Properties
-  private _websocketServer: wsApp
+  private _websocketServer: WebSocket
+
+  private SECRET: string = "FAKE_SECRET";
 
   // all connected users to the server
   private global_counter: number = 0
   private all_active_connections = {}
 
   // Constructor
-  constructor(app) {
-    this._websocketServer = expressWs(app);
+  constructor(server) {
+    /*
+    this._websocketServer = new WebSocket.Server({ server });
 
-    //console.log(this._websocketServer.app);
+    //this._websocketServer.app.use(express.static('public'));
 
-    this._websocketServer.app.on('connection', this.onConnection)
+    //console.log(express.static('public'))
+    
+    this._websocketServer.on('connection', this.onConnection)
+
+    //this._websocketServer.app.on('connection', this.onConnection)
+    */
+   /*
   }
   // Methods
 
@@ -44,6 +54,14 @@ export class WebSocketServer {
   }
 
 
-
+  validateToken(token) {
+    try {
+      let verifiedtoken = jwt.verify(token, SECRET);
+      return verifiedtoken;
+    } catch (e) {
+      console.log(e)
+    }
+  };
 
 }
+*/
