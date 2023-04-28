@@ -37,6 +37,9 @@ function signIn() {
     const password = document.getElementById("password");
     const email = document.getElementById("email");
     const repeatedPassword = document.getElementById("passwordRepeat");
+    const admin = document.getElementById("admin");
+    const moderator = document.getElementById("moderator");
+    const role = "";
     if (username.value == "" || password.value == "") {
         customAlert(1, "Username or password fields are empty");
     } else if (username.value.length <= 2 || password.value.length <= 2) {
@@ -46,10 +49,20 @@ function signIn() {
     } else if (password.value !== repeatedPassword.value) {
         customAlert(1, "False repeated password");
     } else {
-        document.cookie = "username=" + username.value + "; path=/";
+
+        if (admin.checked) {
+            role = "Admin";
+        } else if (moderator.checked) {
+            role = "Moderator";
+        } else {
+            role = "User";
+        }
+
         const registerData = {
             name: username.value,
-            password: password.value
+            password: password.value,
+            email: email.value,
+            role: role
         }
     
         let request;
