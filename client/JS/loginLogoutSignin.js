@@ -65,8 +65,7 @@ function signIn() {
             role: role
         }
     
-        let request;
-        request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         request.open("POST", "http://localhost:3000/api/Register");
         request.onreadystatechange = onRequstUpdate;
         request.send(JSON.stringify(registerData));

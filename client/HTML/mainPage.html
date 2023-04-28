@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Bushido</title>
+        <link rel="stylesheet" href="../CSS/style.css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="../JS/client.js"></script>
+        <title>Typescript Starter</title>
+    </head>
+    <body class="max-h-screen w-[100%]">
+        <!-- Main window -->
+        <div class="flex flex-row h-[100%]">
+            <!-- Left window -->
+            <div class="flex flex-col min-h-screen w-[28rem] bg-white border-r-2 border-black" onmouseleave="hideList()">
+                <div id="userFunctions" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%]">
+                    <div class="text-[1.5rem] mb-[0.5rem] border-b-2">
+                        Logged as: <strong id="yourName">Admin</strong>
+                    </div>
+                    <div onclick="showProfile()" id="" class="listButton flex flex-row relative">
+                        <div class="bg-[url('../materials/user.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
+                        <div class="ml-[3rem]">Show profile</div>
+                    </div>
+                    <div onclick="" id="" class="listButton flex flex-row relative">
+                        <div class="bg-[url('../materials/post.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
+                        <div class="ml-[3rem]">Create new post</div>
+                    </div>
+                    <div onclick="logout()" id="Logout" class="listButton flex flex-row relative">
+                        <div class="bg-[url('../materials/exit.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
+                        <div class="ml-[3rem]">Logout</div>
+                    </div>
+                </div>
+                <div id="userProfile" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
+                <div id="changeProfile" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
+            </div>
+            <!-- Right window -->
+            <div class="flex flex-col min-h-screen w-[100%]">
+                <!-- Chat window -->
+                <div class="relative flex-1">
+                    <div class="w-[100%] h-[100%] absolute top-0 left-0 flex flex-col bg-[url('../Materials/backTest.png')] bg-contain overflow-y-auto">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../JS/alerts.js"></script>
+        <script src="../JS/loginLogoutSignin.js"></script>
+        <script src="../JS/showChangeProfile.js"></script>
+    </body>
+</html>
