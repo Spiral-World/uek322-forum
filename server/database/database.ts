@@ -37,7 +37,7 @@ export class Database {
       conn.end()
       return res
     } catch (err) {
-      //console.log(err)
+      console.log(err)
     }
   }
 

@@ -3,7 +3,7 @@ import express, { Express, Request, Response } from 'express'
 import { API } from './api'
 import http from 'http'
 import { resolve, dirname } from 'path'
-import { Database, User } from './database'
+import { Database, User, Post } from './database'
 
 // Middleware used to get the request body
 import * as bodyParser from 'body-parser'
@@ -21,7 +21,7 @@ class Backend {
   private _API: API
 
   private _user: User
-  //private _post
+  private _post: Post
 
   // Getters
   public get app(): Express {
@@ -58,9 +58,10 @@ class Backend {
     this._database = new Database()
 
     this._user = new User(this._database)
+    this._post = new Post(this._database)
 
     //this._WebSocketServer = new WebSocketServer(this._server)
-    this._API = new API(this._app, this._user)
+    this._API = new API(this._app, this._user, this._post)
     this._env = process.env.NODE_ENV || 'development'
 
     this.setupStaticFiles()

@@ -1,5 +1,5 @@
 import { Request, Response, Express } from 'express'
-import { User } from '../database'
+import { User, Post } from '../database'
 
 import { sign, verify } from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
@@ -8,13 +8,15 @@ export class API {
   // Properties
   app: Express
   private user: User
+  private post: Post
 
   private SECRET: string = /* String(process.env.TOKEN_SECRET) |*/ 'FAKE_SECRET'
 
   // Constructor
-  constructor(app: Express, user: User) {
+  constructor(app: Express, user: User, post: Post) {
     this.app = app
     this.user = user
+    this.post = post
 
     this.app.get('/api/Healthcheck', (req: Request, res: Response) => res.status(200).send('Alive'))
 
@@ -39,6 +41,12 @@ export class API {
   // Methods
   private async login(req: Request, res: Response) {
     try {
+
+      res.cookie('Token', 'james', {
+        httpOnly: true,
+        expires: 20000000
+      })
+
       const aUser = await this.user.getOneUsers(req.body.email)
       
       if (!aUser && aUser.passwdhash == this.hashPassword(req.body.password)) {
