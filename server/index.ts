@@ -4,7 +4,12 @@ import { API } from './api'
 import http from 'http'
 import { resolve, dirname } from 'path'
 import { Database, User } from './database'
+
+// Middleware used to get the request body
 import * as bodyParser from 'body-parser'
+
+// Middleware used for the session token
+import cookieParser from 'cookie-parser';
 
 class Backend {
   // Properties
@@ -46,6 +51,9 @@ class Backend {
     this._app.use(bodyParser.json())
     //support parsing of application/x-www-form-urlencoded post data
     this._app.use(bodyParser.urlencoded({ extended: true }))
+
+    this._app.use(cookieParser());
+
     this._server = http.createServer(this.app);
     this._database = new Database()
 

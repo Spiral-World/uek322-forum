@@ -1,80 +1,100 @@
 import { Request, Response, Express } from 'express'
 import { User } from '../database'
 
-import jwt from 'jsonwebtoken';
 import { sign, verify } from 'jsonwebtoken'
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt'
 
 export class API {
   // Properties
   app: Express
   private user: User
 
-  private SECRET: string = "FAKE_SECRET";
+  private SECRET: string = /* String(process.env.TOKEN_SECRET) |*/ 'FAKE_SECRET'
 
   // Constructor
-  constructor(app: Express, User: User) {
-    this.app = app;
-    this.user = User;
+  constructor(app: Express, user: User) {
+    this.app = app
+    this.user = user
 
-    this.app.get('/api/Healthcheck', (req: Request, res: Response) => res.status(200).send('Alive'));
+    this.app.get('/api/Healthcheck', (req: Request, res: Response) => res.status(200).send('Alive'))
 
     this.app.post('/api/Login', this.login)
     this.app.post('/api/Register', this.register)
   }
 
-  private async hashPassword(password: string) {
+  private async hashPassword(password: string): Promise<string> {
+    console.log(password)
     const salt = await bcrypt.genSalt(10)
+    console.log(salt)
     const hash = await bcrypt.hash(password, salt)
+    console.log(hash)
     return hash
   }
 
   // JWT
-  createToken(id) {
-    const token = jwt.sign({ id }, this.SECRET, {
-      expiresIn: 7200000,
-    });
-    return token;
-  };
-  
+  validateToken(token) {
+    return verify(token, this.SECRET)
+  }
+
   // Methods
   private async login(req: Request, res: Response) {
     try {
-
-      const aUser = await this.user.getOneUsers(req.body.email);
-
+      const aUser = await this.user.getOneUsers(req.body.email)
+      
       if (!aUser && aUser.passwdhash == this.hashPassword(req.body.password)) {
-
+        res.status(200).json({
+          error: 'Invalid name and password',
+        })
       }
 
-    } catch(e) {
+      const token = sign({ id: aUser.id }, this.SECRET, {
+        expiresIn: '5h',
+      })
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 60000000, // 6h
+      })
+
+      res.status(200).json({ token })
+    } catch (e) {
       console.log(e)
+      res.status(400).json({
+        error: 'Invalid name and password',
+      })
     }
-    console.log(req.body)
-    res.status(200).json(req.body)
-    /*
-    req.body.password
-
-    const aUser = await this.user.getOneUsers(req.body.email);
-    if (aUser.passwdhash = password) {
-
-    }
-
-    this.createToken(name)
-    */
   }
 
   private async register(req: Request, res: Response) {
-    req.body.email
-    req.body.password
-    req.body.name
-    req.body.role
-    res.send('Hello There!')
+    try {
+      /*
+      const hashPWD = await this.hashPassword(req.body.password);
+      res.status(200).json({
+        thing: hashPWD
+      })
+      */
+      if (
+        await this.user.register(
+          req.body.name,
+          req.body.email,
+          req.body.password,
+          req.body.role
+        )
+      ) {
+        res.status(200).json({
+          info: 'Succesfuly Registerd',
+        })
+      }
+      res.status(400).json({
+        error: 'Unable to Registerd',
+      })
+    } catch (e) {
+      console.log(e)
+      res.status(400).json({
+        error: 'Invalid Data',
+      })
+    }
   }
 
-  async deleteUser() {
-
-  }
-
-
+  private async deleteUser(req: Request, res: Response) {}
 }

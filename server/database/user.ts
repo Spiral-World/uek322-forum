@@ -18,7 +18,6 @@ export class User {
     }
 
     async register(name: string, email:string, password:string, role:string): Promise<boolean> {
-
         try {
             if (!(await this._database.executeSQL(`SELECT * FROM users WHERE email = '${this._database.preventSQLInjection(email)}'`))) {
                 console.log("User tried using a Already existing mail")
