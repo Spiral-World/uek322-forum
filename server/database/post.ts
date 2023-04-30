@@ -1,3 +1,4 @@
+import { forEach } from 'rambda'
 import { Database } from './database'
 
 export class Post {
@@ -14,9 +15,11 @@ export class Post {
      * USED TO TEST METHODS PLEASE DELETE
      */
     async say() {
+        /*
         console.log(await this.getAllPosts())
         console.log(await this.createPost("jeffry", "1", "16"))
         console.log(await this.getAllPosts())
+        */
     }
 
     async createPost(title: string, content: string, userid: string): Promise<boolean> {
@@ -46,11 +49,38 @@ export class Post {
     }
 
     async getAllPosts() {
+        /*
+        let arrayOfPosts: object[] = await this._database.executeSQL(`SELECT * FROM posts`)
+        array.forEach(element => {
+            
+        });
+        */
         return await this._database.executeSQL(`SELECT * FROM posts`)
     }
 
-    async deletePost(id: string) {
+    async deletePost(id: string): Promise<boolean> {
+        if (await this._database.executeSQL(`DELETE FROM posts WHERE id = ${this._database.preventSQLInjection(id)}`)) {
+            return true
+        }
+        return false
+    }
+
+    async changePostData() {
 
     }
+
+    async likeOrDislikeAPost() {
+
+    }
+
+    async commentOnAPost() {
+
+    }
+
+    async deleteAComment() {
+
+    }
+
+
 
 }

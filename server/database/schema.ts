@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     passwdhash VARCHAR(255) NOT NULL,
     role VARCHAR(30) NOT NULL,
+    ban int(1) NOT NULL,
     PRIMARY KEY (id),
     UNIQUE (email),
     CONSTRAINT FK_PostUserID FOREIGN KEY (role)
