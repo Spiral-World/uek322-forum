@@ -64,30 +64,91 @@ function addPost(titel, text, author, time, likes, dislikes) {
     const postTitel = document.createElement("div");
     const postText = document.createElement("div");
     const postLikes = document.createElement("div");
+    const postLikeIcon = document.createElement("div");
     const postDislikes = document.createElement("div");
-    const postComments = document.createElement("div");
+    const postDislikeIcon = document.createElement("div");
+    const postComments = document.createElement("button");
+    //Hiden Comments
+    const commentWindow = document.createElement("div");
+    const commentBody = document.createElement("div");
+    const commentFooter =document.createElement("div");
+    const commentInput = document.createElement("input");
+    const commentSend = document.createElement("button");
     //Text
     postTime.innerText = time;
-    postAuthor.innerText = author;
+    postAuthor.innerText = "Author: " + author;
     postTitel.innerText = titel;
     postText.innerText = text;
     postLikes.innerText = likes;
     postDislikes.innerText = dislikes;
+    commentInput.placeholder = "Comment text";
     //Styles
-    postWindow.className = "bg-white";
+    postWindow.className = "bg-white mt-[2rem] border-2";
     postHeader.className = "flex flex-row";
     postBody.className = "";
-    postFooter.className = "flex flex-row";
+    postFooter.className = "ml-6 flex flex-row";
+    postLikes.className = "text-[1rem]";
+    postDislikes.className = "text-[1rem]";
+    postAuthor.className = "ml-6 text-[1.5rem]";
+    postTime.className = "mr-6 ml-auto";
+    postTitel.className = "ml-6 text-[1.3rem]";
+    postText.className = "ml-6";
+    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1rem] h-[1rem] mr-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1rem] h-[1rem] mx-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postComments.className = "bg-[url('../materials/comment.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    //Hide styles
+    commentWindow.className = "hidden border-t-4 flex flex-column justify-center";
+    commentBody.className = "w-[80%]";
+    commentFooter.className = "w-[100%] flex flex-row justify-center my-2 border-t-2";
+    commentSend.className = "bg-[url('../materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
+    commentInput.className = "ml-auto mr-4 mt-2 border-2 rounded-[4px] w-[70%]";
+    //Functions
+    postComments.addEventListener("click", function() {
+        if (commentWindow.style.display == "block") {
+            commentWindow.style.display = "none";
+        } else {
+            commentWindow.style.display = "block";
+        }
+    });
+    commentSend.addEventListener("click", function() {
+        createComment("Beb", commentInput.value, commentBody);
+        commentInput.value = "";
+    });
     //Appends
-    postFooter.appendChild(postComments);
+    postFooter.appendChild(postLikeIcon);
     postFooter.appendChild(postLikes);
+    postFooter.appendChild(postDislikeIcon);
     postFooter.appendChild(postDislikes);
+    postFooter.appendChild(postComments);
     postBody.appendChild(postTitel);
     postBody.appendChild(postText);
-    postHeader.appendChild(postTime);
     postHeader.appendChild(postAuthor);
+    postHeader.appendChild(postTime);
     postWindow.appendChild(postHeader);
     postWindow.appendChild(postBody);
     postWindow.appendChild(postFooter);
+    //Hide appends
+    commentFooter.appendChild(commentInput);
+    commentFooter.appendChild(commentSend);
+    commentWindow.appendChild(commentBody);
+    commentWindow.appendChild(commentFooter);
+    postWindow.appendChild(commentWindow);
     postsWindow.appendChild(postWindow);
+}
+
+function createComment(author, text, commentField) {
+    //Dom elements
+    const commentDiv = document.createElement("div");
+    const commentAuthor = document.createElement("div");
+    const commentText = document.createElement("div");
+    //Text
+    commentAuthor.innerText = author;
+    commentText.innerText = text;
+    //Styles
+    commentDiv.className = "ml-6 border-t-2 border-b-2";
+    commentText.className = "break-words";
+    //Appends
+    commentDiv.appendChild(commentAuthor);
+    commentDiv.appendChild(commentText);
+    commentField.appendChild(commentDiv);
 }
