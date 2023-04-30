@@ -40,7 +40,7 @@ export class Post {
     }
   }
 
-  async getAllPosts() {
+  async getAllPosts(): Promise<object[]> {
     let arrayOfPosts: object[] = await this._database.executeSQL(
       `SELECT * FROM posts`
     )

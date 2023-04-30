@@ -43,11 +43,15 @@ export class User {
         }
     }
 
-    async getOneUser(email: string) {
+    async getOneUserbyMail(email: string): Promise<object[]> {
         return await this._database.executeSQL(`SELECT * FROM users WHERE email = '${this._database.preventSQLInjection(email)}'`)
     }
 
-    async getAllUsers() {
+    async getOneUserbyId(id: string): Promise<object[]> {
+        return await this._database.executeSQL(`SELECT * FROM users WHERE id = ${this._database.preventSQLInjection(id)}`)
+    }
+
+    async getAllUsers(): Promise<object[]> {
         return await this._database.executeSQL(`SELECT id, name, email, role, ban FROM users`)
     }
 
@@ -79,7 +83,7 @@ export class User {
         return false
     }
 
-    isUserBanned(id: string) {
+    isUserBanned(id: string): Promise<object[]> {
         return this._database.executeSQL(`SELECT ban FROM users WHERE id = ${this._database.preventSQLInjection(id)}`)
     }
 

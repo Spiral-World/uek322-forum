@@ -18,11 +18,37 @@ export class API {
     this.user = user
     this.post = post
 
-    this.app.get('/api/Healthcheck', (req: Request, res: Response) => res.status(200).send('Alive'))
+    this.app.get('/api/Healthcheck', (req: Request, res: Response) =>
+      res.status(200).send('Alive')
+    )
 
     this.app.post('/api/Login', this.login)
     this.app.post('/api/Register', this.register)
+
+    this.app.get('/api/AllPosts', this.getAllPosts)
   }
+
+  async validateUser(
+    token: string,
+    privliges: string[],
+    res
+  ): Promise<object | void> {
+    let id = verify(token, this.SECRET)
+
+    const aUser = await this.user.getOneUserbyId(id)
+
+    for (let i = 0; i < privliges.length; i++) {
+      const element = privliges[i]
+      if (aUser.role == element) {
+        return aUser
+      }
+    }
+    res.status(403).json({
+      error: 'You Are Not alowed to do this',
+    })
+  }
+
+  //await this.validateUser(req.cookies.token, ["Admin", "Moderator", "User"], res)
 
   private async hashPassword(password: string): Promise<string> {
     console.log(password)
@@ -33,22 +59,11 @@ export class API {
     return hash
   }
 
-  // JWT
-  validateToken(token) {
-    return verify(token, this.SECRET)
-  }
-
   // Methods
   private async login(req: Request, res: Response) {
     try {
-
-      res.cookie('Token', 'james', {
-        httpOnly: true,
-        expires: 20000000
-      })
-
       const aUser = await this.user.getOneUsers(req.body.email)
-      
+
       if (!aUser && aUser.passwdhash == this.hashPassword(req.body.password)) {
         res.status(200).json({
           error: 'Invalid name and password',
@@ -60,8 +75,7 @@ export class API {
       })
 
       res.cookie('token', token, {
-        httpOnly: true,
-        maxAge: 60000000, // 6h
+        httpOnly: true
       })
 
       res.status(200).json({ token })
@@ -102,6 +116,11 @@ export class API {
         error: 'Invalid Data',
       })
     }
+  }
+
+  private async getAllPosts(req: Request, res: Response) {
+    await this.validateUser(req.cookies.token, ["Admin", "Moderator", "User"], res)
+    res.status(400).json(this.post.getAllPosts())
   }
 
   private async deleteUser(req: Request, res: Response) {}
