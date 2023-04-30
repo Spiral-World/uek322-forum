@@ -38,8 +38,8 @@ function showProfile() {
     userProfile.appendChild(changeData);
     allPostsDiv.appendChild(allPostsLabel);
     userProfile.appendChild(allPostsDiv);
-     //Information about all user posts
-     const allPosts = [
+    //Information about all user posts
+    const allPosts = [
         {"Author": "Beb", "Titel": "Attack on titan", "Text": "Bla bla bla bla bla bla", "Likes": 5, "Dislikes": 10, "Comments": 4},
         {"Author": "Beb", "Titel": "3 world war", "Text": "Bla bla bla bla bla bla", "Likes": 10, "Dislikes": 100, "Comments": 8},
         {"Author": "Dominic", "Titel": "Python programming", "Text": "Bla bla bla bla bla bla", "Likes": 2, "Dislikes": 0, "Comments": 10}
