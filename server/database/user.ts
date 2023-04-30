@@ -5,32 +5,9 @@ export class User {
 
     constructor(Database: Database) {
         this._database = Database
-        this.say()
     }
 
     // methoden
-
-    /**
-     * USED TO TEST METHODS PLEASE DELETE
-     */
-    async say() {
-        console.log(await this.getAllUsers())
-        console.log(await this.register("jeffry", "email", "7584irjfhu84", "Admin"))
-        console.log(await this.getOneUser("email"))
-        console.log(await this.changeUserName("email", "tomas"))
-        console.log(await this.getAllUsers())
-        console.log(await this.changeUserPasswd("email", "64738iwekjdfhz4u3iejrfnbhgtzreujdf"))
-        console.log(await this.getAllUsers())
-        console.log(await this.deleteUserbyEmail("email"))
-        console.log(await this.getAllUsers())
-        console.log(await this.banOrUnbanUser("4", true))
-        console.log(await this.isUserBanned("4"))
-        console.log(await this.banOrUnbanUser("1", true))
-        console.log(await this.isUserBanned("1"))
-        console.log(await this.banOrUnbanUser("1", false))
-        console.log(await this.isUserBanned("1"))
-        console.log(await this.getAllUsers())
-    }
 
     async register(name: string, email:string, password:string, role:string): Promise<boolean> {
         try {
