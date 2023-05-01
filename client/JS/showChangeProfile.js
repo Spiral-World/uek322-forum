@@ -1,3 +1,9 @@
+const allPosts = [
+    {"Author": "Beb", "Titel": "Attack on titan", "Text": "Bla bla bla bla bla bla", "Likes": 5, "Dislikes": 10, "Comments": [{"Author":"Mat", "Text":"Bcwqqwcqwcqw"},{"Author":"Jop", "Text":"Sasi hui pidor"}]},
+    {"Author": "Beb", "Titel": "3 world war", "Text": "Bla bla bla bla bla bla", "Likes": 10, "Dislikes": 100, "Comments": {}},
+    {"Author": "Dominic", "Titel": "Python programming", "Text": "Bla bla bla bla bla bla", "Likes": 2, "Dislikes": 0, "Comments": {}}
+];
+
 function showProfile() {
     const userFunctions = document.getElementById("userFunctions");
     const userProfile = document.getElementById("userProfile");
@@ -39,18 +45,13 @@ function showProfile() {
     allPostsDiv.appendChild(allPostsLabel);
     userProfile.appendChild(allPostsDiv);
     //Information about all user posts
-    const allPosts = [
-        {"Author": "Beb", "Titel": "Attack on titan", "Text": "Bla bla bla bla bla bla", "Likes": 5, "Dislikes": 10, "Comments": 4},
-        {"Author": "Beb", "Titel": "3 world war", "Text": "Bla bla bla bla bla bla", "Likes": 10, "Dislikes": 100, "Comments": 8},
-        {"Author": "Dominic", "Titel": "Python programming", "Text": "Bla bla bla bla bla bla", "Likes": 2, "Dislikes": 0, "Comments": 10}
-    ];
     for (let i = 0; i < allPosts.length; i++) {
         if (allPosts[i].Author == "Beb") {
             //DOM
             let post = document.createElement("div");
             let info = document.createElement("div");
             //Text
-            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + allPosts[i].Comments;
+            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + allPosts[i].Comments.length;
             //Styles 
             post.className = "text-[1rem] border-2";
             //Appends

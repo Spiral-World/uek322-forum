@@ -27,6 +27,10 @@
                         <div class="bg-[url('../materials/post.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
                         <div class="ml-[3rem]">Create new post</div>
                     </div>
+                    <div onclick="userBlock()" id="" class="listButton flex flex-row relative">
+                        <div class="bg-[url('../materials/blockUser.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
+                        <div class="ml-[3rem]">Block users</div>
+                    </div>
                     <div onclick="logout()" id="Logout" class="listButton flex flex-row relative">
                         <div class="bg-[url('../materials/exit.png')] bg-cover w-[1.3rem] h-[1.3rem] absolute top-[0.4rem] left-[0.3rem]"></div>
                         <div class="ml-[3rem]">Logout</div>
@@ -35,6 +39,7 @@
                 <div id="userProfile" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
                 <div id="changeProfile" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
                 <div id="createPost" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
+                <div id="blockUser" class="ml-2 py-[0.3rem] text-[1.25rem] bg-white mt-[0.5rem] w-[90%] hidden"></div>
             </div>
             <!-- Right window -->
             <div class="flex flex-col min-h-screen w-[100%]">
@@ -50,5 +55,6 @@
         <script src="../JS/loginLogoutSignin.js"></script>
         <script src="../JS/showChangeProfile.js"></script>
         <script src="../JS/createNewPost.js"></script>
+        <script src="../JS/blockUsers.js"></script>
     </body>
 </html>
