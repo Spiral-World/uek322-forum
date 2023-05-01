@@ -63,6 +63,7 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const postTime = document.createElement("div");
     const postTitel = document.createElement("div");
     const postText = document.createElement("div");
+    const postScore = document.createElement("div");
     const postLikes = document.createElement("div");
     const postLikeIcon = document.createElement("div");
     const postDislikes = document.createElement("div");
@@ -79,7 +80,7 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const commentSend = document.createElement("button");
     //Text
     postTime.innerText = time;
-    postAuthor.innerText = "Author: " + author;
+    postAuthor.innerText = author;
     postTitel.innerText = titel;
     postText.innerText = text;
     postLikes.innerText = likes;
@@ -91,22 +92,23 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     }
     commentInput.placeholder = "Comment text";
     //Styles
-    postWindow.className = "bg-white mt-[2rem] border-2";
-    postHeader.className = "flex flex-row";
+    postWindow.className = "bg-white mt-[2rem] border-4 border-gray-300 shadow-lg shadow-black";
+    postHeader.className = "flex flex-row mt-[0.5rem]";
     postBody.className = "";
-    postFooter.className = "ml-6 flex flex-row";
-    postLikes.className = "text-[1rem]";
+    postFooter.className = "ml-6 flex flex-row mb-2";
+    postLikes.className = "text-[1rem] border-r-2 pr-2";
     postDislikes.className = "text-[1rem]";
-    postComments.className = "text-[1rem]";
-    postAuthor.className = "ml-6 text-[1.5rem]";
+    postComments.className = "text-[1rem] mt-[0.2rem] ml-[0.1rem]";
+    postAuthor.className = "ml-6 text-[1.2rem]";
     postTime.className = "mr-6 ml-auto";
-    postTitel.className = "ml-6 text-[1.3rem] mb-2";
-    postText.className = "ml-6 break-words";
-    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1rem] h-[1rem] mr-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1rem] h-[1rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postCommentsIcon.className = "bg-[url('../materials/comment.png')] bg-cover w-[1rem] h-[1rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postDelete.className = "bg-[url('../materials/delete.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2";
+    postText.className = "ml-6 break-words mb-2";
+    postScore.className = "rounded-full border-2 flex flex-row py-1 px-1";
+    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(80,250,100,0.4)] rounded";
+    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
+    postCommentsIcon.className = "bg-[url('../materials/comment.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[0.2rem] mt-[0.3rem] cursor-pointer hover:bg-gray-300 rounded";
+    postDelete.className = "bg-[url('../materials/delete.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-auto mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
+    postEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[1.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(245,255,90,0.4)] rounded";
     //Hide styles
     commentWindow.className = "hidden border-t-4 flex flex-column justify-center";
     commentBody.className = "w-[95%] max-h-[10rem] overflow-y-auto";
@@ -132,20 +134,21 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
         if (postText.contentEditable == "true") {
             postText.contentEditable = "false";
             postTitel.contentEditable = "false";
-            postText.className = "ml-6 break-words";
-            postTitel.className = "ml-6 text-[1.3rem] mb-2";
+            postText.className = "ml-6 break-words mb-2";
+            postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2";
         } else {
             postText.contentEditable = "true";
             postTitel.contentEditable = "true";
-            postText.className = "ml-6 break-words bg-[rgba(252,39,128,0.4)]"
-            postTitel.className = "ml-6 text-[1.3rem] mb-2 bg-[rgba(252,39,128,0.4)]";
+            postText.className = "ml-6 break-words mb-2 bg-[rgba(252,39,128,0.4)]";
+            postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2 bg-[rgba(252,39,128,0.4)]";
         }  
     });
     //Appends
-    postFooter.appendChild(postLikeIcon);
-    postFooter.appendChild(postLikes);
-    postFooter.appendChild(postDislikeIcon);
-    postFooter.appendChild(postDislikes);
+    postScore.appendChild(postLikeIcon);
+    postScore.appendChild(postLikes);
+    postScore.appendChild(postDislikeIcon);
+    postScore.appendChild(postDislikes);
+    postFooter.appendChild(postScore);
     postFooter.appendChild(postCommentsIcon);
     postFooter.appendChild(postComments);
     postFooter.appendChild(postDelete);
