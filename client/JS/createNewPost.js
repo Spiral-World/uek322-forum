@@ -47,7 +47,7 @@ function createNewPost() {
     } else if (postText.value == "") {
         customAlert(2, "Please provide some text");
     } else {
-        addPost(postTitel.value, postText.value, "Beb", String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16)), 5, 10);
+        addPost(postTitel.value, postText.value, localStorage.getItem("username"), String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16)), 5, 10);
         backArrow.click();
     }
 }
@@ -67,7 +67,8 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const postLikeIcon = document.createElement("div");
     const postDislikes = document.createElement("div");
     const postDislikeIcon = document.createElement("div");
-    const postComments = document.createElement("button");
+    const postComments = document.createElement("div");
+    const postCommentsIcon = document.createElement("button");
     const postDelete = document.createElement("button");
     const postEdit = document.createElement("button");
     //Hiden Comments
@@ -83,6 +84,11 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postText.innerText = text;
     postLikes.innerText = likes;
     postDislikes.innerText = dislikes;
+    if (comments.length !== undefined) {
+        postComments.innerText = comments.length;
+    } else {
+        postComments.innerText = 0;
+    }
     commentInput.placeholder = "Comment text";
     //Styles
     postWindow.className = "bg-white mt-[2rem] border-2";
@@ -91,13 +97,14 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postFooter.className = "ml-6 flex flex-row";
     postLikes.className = "text-[1rem]";
     postDislikes.className = "text-[1rem]";
+    postComments.className = "text-[1rem]";
     postAuthor.className = "ml-6 text-[1.5rem]";
     postTime.className = "mr-6 ml-auto";
     postTitel.className = "ml-6 text-[1.3rem] mb-2";
     postText.className = "ml-6 break-words";
-    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1rem] h-[1rem] mr-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1rem] h-[1rem] mx-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    postComments.className = "bg-[url('../materials/comment.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1rem] h-[1rem] mr-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1rem] h-[1rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    postCommentsIcon.className = "bg-[url('../materials/comment.png')] bg-cover w-[1rem] h-[1rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     postDelete.className = "bg-[url('../materials/delete.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     postEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     //Hide styles
@@ -107,7 +114,7 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     commentSend.className = "bg-[url('../materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
     commentInput.className = "ml-auto mr-4 mt-2 border-2 rounded-[4px] w-[70%]";
     //Functions
-    postComments.addEventListener("click", function() {
+    postCommentsIcon.addEventListener("click", function() {
         if (commentWindow.style.display == "block") {
             commentWindow.style.display = "none";
         } else {
@@ -139,6 +146,7 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postFooter.appendChild(postLikes);
     postFooter.appendChild(postDislikeIcon);
     postFooter.appendChild(postDislikes);
+    postFooter.appendChild(postCommentsIcon);
     postFooter.appendChild(postComments);
     postFooter.appendChild(postDelete);
     postFooter.appendChild(postEdit);

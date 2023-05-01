@@ -7,28 +7,12 @@ function login() {
     } else if (username.value.length <= 2 || password.value.length <= 2) {
         customAlert(1, "Username or password field are to short");
     } else {
-
         const loginData = {
             name: username.value,
             password: password.value
         }
-
-        let request = new XMLHttpRequest();
-        request.open("POST", "http://localhost:3000/api/Login");
-        request.onreadystatechange = onRequstUpdate;
-        request.send(JSON.stringify(loginData));
-
-        function onRequstUpdate() {
-            if (request.readyState < 4) {
-                return;
-            }
-            if (request.status == 200 || request.status == 201) {
-                document.cookie = "username=" + username.value + "; path=/";
-                document.location.href = "index.html";
-            } else {
-                customAlert(1, "Username or password field are wrong");
-            }
-        }
+        localStorage.setItem("username", username.value);
+        document.location.href = "mainPage.html";
     }
 }
 
