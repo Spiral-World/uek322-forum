@@ -44,6 +44,14 @@ class Backend {
     return this._database
   }
 
+  public get user(): User {
+    return this._user
+  }
+
+  public get post(): Post {
+    return this._post
+  }
+
   // Constructor
   constructor() {
     this._app = express()

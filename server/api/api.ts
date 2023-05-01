@@ -7,8 +7,8 @@ import * as bcrypt from 'bcrypt'
 export class API {
   // Properties
   app: Express
-  private user: User
-  private post: Post
+  user: User
+  post: Post
 
   private SECRET: string = /* String(process.env.TOKEN_SECRET) |*/ 'FAKE_SECRET'
 
@@ -19,13 +19,13 @@ export class API {
     this.post = post
 
     this.app.get('/api/Healthcheck', (req: Request, res: Response) =>
-      res.status(200).send('Alive')
+      res.status(200).send(1)
     )
 
-    this.app.post('/api/Login', this.login)
-    this.app.post('/api/Register', this.register)
+    this.app.post('/api/Login', this.login.bind(this))
+    this.app.post('/api/Register', this.register.bind(this))
 
-    this.app.get('/api/AllPosts', this.getAllPosts)
+    this.app.get('/api/AllPosts', this.getAllPosts.bind(this))
   }
 
   async validateUser(
@@ -34,6 +34,8 @@ export class API {
     res
   ): Promise<object | void> {
     let id = verify(token, this.SECRET)
+
+    console.log(id)
 
     const aUser = await this.user.getOneUserbyId(id)
 
@@ -51,25 +53,22 @@ export class API {
   //await this.validateUser(req.cookies.token, ["Admin", "Moderator", "User"], res)
 
   private async hashPassword(password: string): Promise<string> {
-    console.log(password)
     const salt = await bcrypt.genSalt(10)
-    console.log(salt)
     const hash = await bcrypt.hash(password, salt)
-    console.log(hash)
     return hash
   }
 
   // Methods
   private async login(req: Request, res: Response) {
     try {
-      const aUser = await this.user.getOneUsers(req.body.email)
+      const aUser = await this.user.getOneUserbyMail(req.body.email)
 
       if (!aUser && aUser.passwdhash == this.hashPassword(req.body.password)) {
         res.status(200).json({
           error: 'Invalid name and password',
         })
+        return;
       }
-
       const token = sign({ id: aUser.id }, this.SECRET, {
         expiresIn: '5h',
       })
@@ -78,49 +77,47 @@ export class API {
         httpOnly: true
       })
 
-      res.status(200).json({ token })
+      res.status(200).json({
+        info: "Successfuly created Token"
+      })
     } catch (e) {
       console.log(e)
-      res.status(400).json({
-        error: 'Invalid name and password',
-      })
+      res.status(500)
     }
   }
 
   private async register(req: Request, res: Response) {
     try {
-      /*
-      const hashPWD = await this.hashPassword(req.body.password);
-      res.status(200).json({
-        thing: hashPWD
-      })
-      */
+      const data: object = req.body
+      
+      const hashPWD: string = await this.hashPassword(data.password);
+      
       if (
         await this.user.register(
-          req.body.name,
-          req.body.email,
-          req.body.password,
-          req.body.role
+          data.name,
+          data.email,
+          hashPWD,
+          data.role
         )
       ) {
         res.status(200).json({
           info: 'Succesfuly Registerd',
         })
+        return;
       }
       res.status(400).json({
         error: 'Unable to Registerd',
       })
+      return;
     } catch (e) {
       console.log(e)
-      res.status(400).json({
-        error: 'Invalid Data',
-      })
+      res.status(500)
     }
   }
 
   private async getAllPosts(req: Request, res: Response) {
-    await this.validateUser(req.cookies.token, ["Admin", "Moderator", "User"], res)
-    res.status(400).json(this.post.getAllPosts())
+    //await this.validateUser(req.cookies.token, ["Admin", "Moderator", "User"], res)
+    res.status(200).json(await this.post.getAllPosts())
   }
 
   private async deleteUser(req: Request, res: Response) {}

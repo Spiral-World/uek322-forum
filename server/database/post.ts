@@ -1,4 +1,3 @@
-import { forEach } from 'rambda'
 import { Database } from './database'
 
 export class Post {

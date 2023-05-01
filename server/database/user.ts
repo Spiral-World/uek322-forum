@@ -9,9 +9,9 @@ export class User {
 
     // methoden
 
-    async register(name: string, email:string, password:string, role:string): Promise<boolean> {
+    async register(name: string, password:string, role:string): Promise<boolean> {
         try {
-            if (!(await this._database.executeSQL(`SELECT * FROM users WHERE email = '${this._database.preventSQLInjection(email)}'`))) {
+            if (!(await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`))) {
                 console.log("User tried using a Already existing mail")
                 return false
             }
@@ -19,21 +19,19 @@ export class User {
             INSERT INTO users (
                 id,
                 name,
-                email,
                 passwdhash,
                 role,
                 ban
             ) VALUES (
                 NULL,
                 '${this._database.preventSQLInjection(name)}',
-                '${this._database.preventSQLInjection(email)}',
                 '${this._database.preventSQLInjection(password)}',
                 '${this._database.preventSQLInjection(role)}',
                 0
             );`;
-
+            
             if (await this._database.executeSQL(query)) {
-                console.log(`User: ${name}, ${email}, Registerd`)
+                console.log(`User: ${name}, ${role}, Registerd`)
                 return true
             }
             return false
@@ -43,8 +41,8 @@ export class User {
         }
     }
 
-    async getOneUserbyMail(email: string): Promise<object[]> {
-        return await this._database.executeSQL(`SELECT * FROM users WHERE email = '${this._database.preventSQLInjection(email)}'`)
+    async getOneUserbyName(name: string): Promise<object[]> {
+        return await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`)
     }
 
     async getOneUserbyId(id: string): Promise<object[]> {
@@ -52,25 +50,28 @@ export class User {
     }
 
     async getAllUsers(): Promise<object[]> {
-        return await this._database.executeSQL(`SELECT id, name, email, role, ban FROM users`)
+        return await this._database.executeSQL(`SELECT id, name, role, ban FROM users`)
     }
 
-    async changeUserName(email: string, name: string): Promise<boolean> {
-        if (await this._database.executeSQL(`UPDATE users SET name = '${this._database.preventSQLInjection(name)}' WHERE email = '${this._database.preventSQLInjection(email)}';`)) {
+    async changeUserName(newName, Oldname: string): Promise<boolean> {
+        if (await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(newName)}';`)) {
+            return false
+        }
+        if (await this._database.executeSQL(`UPDATE users SET name = '${this._database.preventSQLInjection(newName)}' WHERE name = '${this._database.preventSQLInjection(Oldname)}';`)) {
             return true
         }
         return false
     }
 
-    async changeUserPasswd(email: string, passwdhash: string): Promise<boolean> {
-        if (await this._database.executeSQL(`UPDATE users SET passwdhash = '${this._database.preventSQLInjection(passwdhash)}' WHERE email = '${this._database.preventSQLInjection(email)}';`)) {
+    async changeUserPasswd(name: string, passwdhash: string): Promise<boolean> {
+        if (await this._database.executeSQL(`UPDATE users SET passwdhash = '${this._database.preventSQLInjection(passwdhash)}' WHERE name = '${this._database.preventSQLInjection(name)}';`)) {
             return true
         }
         return false
     }
 
-    async deleteUserbyEmail(email: string): Promise<boolean> {
-        if (await this._database.executeSQL(`DELETE FROM users WHERE email = '${this._database.preventSQLInjection(email)}';`)) {
+    async deleteUserbyName(name: string): Promise<boolean> {
+        if (await this._database.executeSQL(`DELETE FROM users WHERE name = '${this._database.preventSQLInjection(name)}';`)) {
             return true
         }
         return false
