@@ -44,9 +44,6 @@ const CHECK_IF_ROLE_EXISTS = async (sql: Function, name: string): Promise<boolea
     }
 }
 
-/**
- * ToDo: Add a Date to the Posts
- */
 const POSTS_TABLE = `
 CREATE TABLE IF NOT EXISTS posts (
     id INT(11) NOT NULL AUTO_INCREMENT,

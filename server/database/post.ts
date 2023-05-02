@@ -50,9 +50,9 @@ export class Post {
         const post: object = arrayOfPosts[i];
 
         let newLikes: object[] = []
-        let commentsFromPost: object[] = await this._database.executeSQL(`SELECT * FROM comments`)
-        for (let index = 0; index < commentsFromPost.length; index++) {
-            const element = commentsFromPost[index];
+        let likesFromPost: object[] = await this._database.executeSQL(`SELECT * FROM likes`)
+        for (let index = 0; index < likesFromPost.length; index++) {
+            const element = likesFromPost[index];
 
             if (element.postid == post.id) {
                 newLikes.push(element)
@@ -60,9 +60,9 @@ export class Post {
         }
 
         let newComments: object[] = []
-        let likesFromPost: object[] = await this._database.executeSQL(`SELECT * FROM likes`)
-        for (let index = 0; index < likesFromPost.length; index++) {
-            const element = likesFromPost[index];
+        let commentsFromPost: object[] = await this._database.executeSQL(`SELECT * FROM comments`)
+        for (let index = 0; index < commentsFromPost.length; index++) {
+            const element = commentsFromPost[index];
 
             if (element.postid == post.id) {
                 newComments.push(element)
@@ -180,6 +180,13 @@ export class Post {
         )}`
       )
     ) {
+      return true
+    }
+    return false
+  }
+
+  async changeAComment(id: string, text: string): Promise<boolean> {
+    if (await this._database.executeSQL(`UPDATE comments SET text = ${this._database.preventSQLInjection(text)}} WHERE id = ${this._database.preventSQLInjection(id)}`)) {
       return true
     }
     return false

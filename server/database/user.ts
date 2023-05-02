@@ -11,8 +11,9 @@ export class User {
 
     async register(name: string, password:string, role:string): Promise<boolean> {
         try {
-            if (!(await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`))) {
-                console.log("User tried using a Already existing mail")
+            let alreadyExists: object[] = await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`)
+            if (!(alreadyExists.length == 0)) {
+                console.log(`Alredy Existing Name: ${name}, Tryed Registering`)
                 return false
             }
             const query = `
@@ -44,7 +45,7 @@ export class User {
     async getOneUserbyName(name: string): Promise<object[]> {
         return await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`)
     }
-
+    
     async getOneUserbyId(id: string): Promise<object[]> {
         return await this._database.executeSQL(`SELECT * FROM users WHERE id = ${this._database.preventSQLInjection(id)}`)
     }
@@ -53,8 +54,9 @@ export class User {
         return await this._database.executeSQL(`SELECT id, name, role, ban FROM users`)
     }
 
-    async changeUserName(newName, Oldname: string): Promise<boolean> {
-        if (await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(newName)}';`)) {
+    async changeUserName(newName: string, Oldname: string): Promise<boolean> {
+        let alreadyExists: object[] = await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(Oldname)}';`)
+        if (alreadyExists.length == 0) {
             return false
         }
         if (await this._database.executeSQL(`UPDATE users SET name = '${this._database.preventSQLInjection(newName)}' WHERE name = '${this._database.preventSQLInjection(Oldname)}';`)) {
