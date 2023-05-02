@@ -34,7 +34,7 @@ export class API {
     this.app.put('/api/UserName', this.changeUserName.bind(this))
     this.app.put('/api/UserPWD', this.changeUserPassword.bind(this))
     this.app.delete('/api/User', this.deleteUser.bind(this))
-    this.app.get('/api/AllUser', this.getAllUsers.bind(this))
+    this.app.get('/api/AllUsers', this.getAllUsers.bind(this))
     this.app.get('/api/WhoAmI', this.whoAmI.bind(this))
     //post
     this.app.get('/api/AllPosts', this.getAllPosts.bind(this))
@@ -56,16 +56,17 @@ export class API {
   private async validateUser(
     token: string,
     privliges: string[],
-    res
+    res?
   ): Promise<object | boolean> {
     try {
       let id = await verify(token, this.SECRET).id
 
       const aUser = await this.user.getOneUserbyId(String(id))
-
-      console.log(aUser, aUser[0].ban)
   
       if (aUser[0].ban == 1) {
+        if(res === undefined) {
+          return false
+        }
         res.status(403).json({
           error: 'Banned',
         })
@@ -78,11 +79,17 @@ export class API {
           return aUser[0]
         }
       }
+      if(res === undefined) {
+        return false
+      }
       res.status(403).json({
         error: 'You Are Not alowed to do this',
       })
       return false
     } catch(e) {
+      if(res === undefined) {
+        return false
+      }
       res.status(403).json({
         error: 'You Are Not alowed to do this',
       })
@@ -203,58 +210,204 @@ export class API {
   }
 
   private async createPost(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    const user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)
+    if (!user) {
       return;
     }
 
     const data: any = req.body
 
-    if (!data.name) {
+    if (!data.titel) {
       res.status(401).json({
-        error: 'Invalid name',
+        error: 'Invalid title',
+      })
+      return;
+    }
+    if (!data.content) {
+      res.status(401).json({
+        error: 'Invalid content',
+      })
+      return;
+    }
+    if (!user.id) {
+      res.status(401).json({
+        error: 'Invalid id',
+      })
+      return;
+    }
+
+    this.post.createPost(data.titel, String(data.content), String(user.id))
+
+    res.status(200).json({
+      info: 'Created a Post',
+    })
+    return;
+  }
+
+  // ToDo: Admin/moderator can delete all posts user just own
+  private async deletePost(req: Request, res: Response) {
+
+    const data: any = req.body
+
+    if (!data.postid) {
+      res.status(401).json({
+        error: 'Invalid postid',
+      })
+      return;
+    }
+
+    let user = await this.validateUser(req.cookies.token, ['User'])
+    if (user !== false) {
+
+      const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
+
+      for (let i = 0; i < MY_POSTS.length; i++) {
+        const element = MY_POSTS[i];
+
+        if (data.postid == element.id) {
+          await this.post.deletePost(String(element.id))
+          res.status(200).json({
+            info: 'deleted post: ' + element.id
+          })
+          return;
+        }
+
+      }
+      res.status(400).json({
+        error: 'didnt delete a post',
+      })
+      return;
+    }
+    user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
+    if (user !== false) {
+      
+      await this.post.deletePost(data.postid)
+      res.status(200).json({
+        info: 'deleted post: ' + data.postid + ', This Post Could Also Not Exist'
+      })
+      return;
+    }
+    
+    res.status(400).json({
+      error: 'didnt delete a post',
+    })
+    return;
+  }
+
+  private async changePost(req: Request, res: Response) {
+
+    const data: any = req.body
+
+    if (!data.postid) {
+      res.status(401).json({
+        error: 'Invalid postid',
+      })
+      return;
+    }
+    if (!data.titel) {
+      res.status(401).json({
+        error: 'Invalid titel',
+      })
+      return;
+    }
+    if (!data.content) {
+      res.status(401).json({
+        error: 'Invalid content',
+      })
+      return;
+    }
+
+    let user = await this.validateUser(req.cookies.token, ['User'])
+    if (user !== false) {
+      const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
+
+      for (let i = 0; i < MY_POSTS.length; i++) {
+        const element = MY_POSTS[i];
+
+        if (data.postid == element.id) {
+          await this.post.changePostData(String(element.id), String(data.titel), String(data.content))
+          res.status(200).json({
+            info: 'changed post: ' + element.id
+          })
+          return;
+        }
+
+      }
+      res.status(400).json({
+        error: 'didnt change a post',
+      })
+      return;
+    }
+    user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
+    if (user !== false) {
+      await this.post.changePostData(String(data.postid), String(data.titel), String(data.content))
+      res.status(200).json({
+        info: 'changed post: ' + data.postid + ', This Post Could Also Not Exist'
       })
       return;
     }
 
   }
 
-  private async deletePost(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
-      return;
-    }
-
-  }
-
-  private async changePost(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
-      return;
-    }
-
-  }
-
   private async myPosts(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    let user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)
+    if (!user) {
       return;
     }
+    const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
 
+    if(!MY_POSTS) {
+      res.status(401).json({
+        error: "Unable to get your posts"
+      })
+    }
+    res.status(200).json(MY_POSTS)
   }
 
   private async getAllUsers(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    if (!await this.validateUser(req.cookies.token, ['Admin'], res)) {
       return;
     }
-
+    res.status(200).json(await this.user.getAllUsers())
   }
 
   private async whoAmI(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    const user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)
+    if (!user) {
       return;
     }
+    const ME = await this.user.getOneUserbyId(String(user.id))
 
+    const ME_BUT_NO_PASWD = {
+      id: ME[0].id,
+      name: ME[0].name,
+      role: ME[0].role
+    }
+
+    res.status(200).json(ME_BUT_NO_PASWD)
   }
 
   private async deleteUser(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    let user = await this.validateUser(req.cookies.token, ['User'])
+    if (user !== false) {
+      this.user.deleteUserbyName(String(user.name))
+    }
+    user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
+    if (user !== false) {
+
+      const data: any = req.body
+
+      if (!data.username) {
+        res.status(401).json({
+          error: 'Invalid username',
+        })
+        return;
+      }
+
+      this.user.deleteUserbyName(String(data.username))
+      res.status(200).json({
+        info: 'Deleted a User: ' + data.username
+      })
       return;
     }
 

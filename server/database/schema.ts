@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
     PRIMARY KEY (id),
     UNIQUE (name),
     CONSTRAINT FK_PostUserID FOREIGN KEY (role)
-    REFERENCES roles(role)
+    REFERENCES roles(role) ON DELETE CASCADE
 );
 `;
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS posts (
     content TEXT NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT FK_LikesPostID FOREIGN KEY (userid)
-    REFERENCES users(id)
+    REFERENCES users(id) ON DELETE CASCADE
 );
 `;
 
@@ -64,9 +64,9 @@ CREATE TABLE IF NOT EXISTS likes (
     likeit int(1) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT FK__LikesUserID FOREIGN KEY (userid)
-    REFERENCES users(id),
+    REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT FK__LikesPostID FOREIGN KEY (postid)
-    REFERENCES posts(id)
+    REFERENCES posts(id) ON DELETE CASCADE
 );
 `;
 
@@ -78,9 +78,9 @@ CREATE TABLE IF NOT EXISTS comments (
     text TEXT NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT FK_CommentsUserID FOREIGN KEY (userid)
-    REFERENCES users(id),
+    REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT FK_CommentsPostID FOREIGN KEY (postid)
-    REFERENCES posts(id)
+    REFERENCES posts(id) ON DELETE CASCADE
 );
 `;
 

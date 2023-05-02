@@ -82,6 +82,10 @@ export class Post {
     return newPostsWithCommentsLikes
   }
 
+  async getOnePersonsPosts(userId: string): Promise<object[] | boolean>  {
+    return await this._database.executeSQL(`SELECT * FROM posts WHERE userid = ${this._database.preventSQLInjection(userId)}`)
+  }
+
   async deletePost(id: string): Promise<boolean> {
     if (
       await this._database.executeSQL(
