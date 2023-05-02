@@ -9,7 +9,7 @@ import { Database, User, Post } from './database'
 import * as bodyParser from 'body-parser'
 
 // Middleware used for the session token
-import cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser'
 
 class Backend {
   // Properties
@@ -31,7 +31,7 @@ class Backend {
   public get server(): http.Server {
     return this._server
   }
-/*
+  /*
   public get webSocketServer(): WebSocketServer {
     return this._WebSocketServer
   }
@@ -60,9 +60,9 @@ class Backend {
     //support parsing of application/x-www-form-urlencoded post data
     this._app.use(bodyParser.urlencoded({ extended: true }))
 
-    this._app.use(cookieParser());
+    this._app.use(cookieParser())
 
-    this._server = http.createServer(this.app);
+    this._server = http.createServer(this.app)
     this._database = new Database()
 
     this._user = new User(this._database)

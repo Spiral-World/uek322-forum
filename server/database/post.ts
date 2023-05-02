@@ -45,45 +45,97 @@ export class Post {
     )
 
     let newPostsWithCommentsLikes: object[] = []
-    
+
     for (let i = 0; i < arrayOfPosts.length; i++) {
-        const post: object = arrayOfPosts[i];
+      const post: object = arrayOfPosts[i]
 
-        let newLikes: object[] = []
-        let likesFromPost: object[] = await this._database.executeSQL(`SELECT * FROM likes`)
-        for (let index = 0; index < likesFromPost.length; index++) {
-            const element = likesFromPost[index];
+      let personWhoPosted: object[] = await this._database.executeSQL(
+        `SELECT name FROM users WHERE id = ${post.userid}`
+      )
 
-            if (element.postid == post.id) {
-                newLikes.push(element)
-            }
+      let newLikes: object[] = []
+      let likesFromPost: object[] = await this._database.executeSQL(
+        `SELECT * FROM likes`
+      )
+      for (let index = 0; index < likesFromPost.length; index++) {
+        const element = likesFromPost[index]
+
+        if (element.postid == post.id) {
+          newLikes.push(element)
         }
+      }
 
-        let newComments: object[] = []
-        let commentsFromPost: object[] = await this._database.executeSQL(`SELECT * FROM comments`)
-        for (let index = 0; index < commentsFromPost.length; index++) {
-            const element = commentsFromPost[index];
+      let newComments: object[] = []
+      let commentsFromPost: object[] = await this._database.executeSQL(
+        `SELECT * FROM comments`
+      )
+      for (let index = 0; index < commentsFromPost.length; index++) {
+        const element = commentsFromPost[index]
 
-            if (element.postid == post.id) {
-                newComments.push(element)
-            }
+        if (element.postid == post.id) {
+          newComments.push(element)
         }
-        
-        newPostsWithCommentsLikes.push({
-            id: post.id,
-            title: post.title,
-            content: post.content,
-            userid: post.userid,
-            comments: newComments,
-            likes: newLikes
-        })
+      }
+
+      newPostsWithCommentsLikes.push({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        userid: post.userid,
+        author: personWhoPosted[0].name,
+        comments: newComments,
+        likes: newLikes,
+      })
     }
 
     return newPostsWithCommentsLikes
   }
 
-  async getOnePersonsPosts(userId: string): Promise<object[] | boolean>  {
-    return await this._database.executeSQL(`SELECT * FROM posts WHERE userid = ${this._database.preventSQLInjection(userId)}`)
+  async getOnePersonsPosts(userId: string): Promise<object[] | boolean> {
+    const PERSONS_POSTS = await this._database.executeSQL(
+      `SELECT * FROM posts WHERE userid = ${this._database.preventSQLInjection(
+        userId
+      )}`
+    )
+
+    let personsPostsWithCommentsLikes: object[] = []
+
+    for (let i = 0; i < PERSONS_POSTS.length; i++) {
+      const post: object = PERSONS_POSTS[i]
+
+      let newLikes: object[] = []
+      let likesFromPost: object[] = await this._database.executeSQL(
+        `SELECT * FROM likes`
+      )
+      for (let index = 0; index < likesFromPost.length; index++) {
+        const element = likesFromPost[index]
+
+        if (element.postid == post.id) {
+          newLikes.push(element)
+        }
+      }
+
+      let newComments: object[] = []
+      let commentsFromPost: object[] = await this._database.executeSQL(
+        `SELECT * FROM comments`
+      )
+      for (let index = 0; index < commentsFromPost.length; index++) {
+        const element = commentsFromPost[index]
+
+        if (element.postid == post.id) {
+          newComments.push(element)
+        }
+      }
+
+      personsPostsWithCommentsLikes.push({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        comments: newComments,
+        likes: newLikes,
+      })
+    }
+    return personsPostsWithCommentsLikes
   }
 
   async deletePost(id: string): Promise<boolean> {
@@ -190,7 +242,13 @@ export class Post {
   }
 
   async changeAComment(id: string, text: string): Promise<boolean> {
-    if (await this._database.executeSQL(`UPDATE comments SET text = ${this._database.preventSQLInjection(text)}} WHERE id = ${this._database.preventSQLInjection(id)}`)) {
+    if (
+      await this._database.executeSQL(
+        `UPDATE comments SET text = ${this._database.preventSQLInjection(
+          text
+        )}} WHERE id = ${this._database.preventSQLInjection(id)}`
+      )
+    ) {
       return true
     }
     return false

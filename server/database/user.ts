@@ -9,11 +9,17 @@ export class User {
 
     // methoden
 
-    async register(name: string, password:string, role:string): Promise<boolean> {
+    async register(name: string, password:string): Promise<boolean> {
         try {
             let alreadyExists: object[] = await this._database.executeSQL(`SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(name)}'`)
             if (!(alreadyExists.length == 0)) {
                 console.log(`Alredy Existing Name: ${name}, Tryed Registering`)
+                return false
+            }
+            if (this._database.preventSQLInjection(name) == null) {
+                return false
+            }
+            if (this._database.preventSQLInjection(password) == null) {
                 return false
             }
             const query = `
@@ -27,12 +33,12 @@ export class User {
                 NULL,
                 '${this._database.preventSQLInjection(name)}',
                 '${this._database.preventSQLInjection(password)}',
-                '${this._database.preventSQLInjection(role)}',
+                'User',
                 0
             );`;
             
             if (await this._database.executeSQL(query)) {
-                console.log(`User: ${name}, ${role}, Registerd`)
+                console.log(`User: ${this._database.preventSQLInjection(name)}, Registerd`)
                 return true
             }
             return false
@@ -86,8 +92,15 @@ export class User {
         return false
     }
 
-    isUserBanned(id: string): Promise<object[]> {
-        return this._database.executeSQL(`SELECT ban FROM users WHERE id = ${this._database.preventSQLInjection(id)}`)
+    async isUserBanned(id: string): Promise<object[]> {
+        return await this._database.executeSQL(`SELECT ban FROM users WHERE id = ${this._database.preventSQLInjection(id)}`)
+    }
+
+    async changeUserRoll(name: string, newRoll: string): Promise<boolean> {
+        if (await this._database.executeSQL(`UPDATE users SET roll = '${this._database.preventSQLInjection(newRoll)}' WHERE name = '${this._database.preventSQLInjection(name)}';`)) {
+            return true
+        }
+        return false
     }
 
 }

@@ -161,12 +161,6 @@ export class API {
     try {
       const data: any = req.body
 
-      if (!data.role) {
-        res.status(401).json({
-          error: 'Invalid role',
-        })
-        return;
-      }
       if (!data.name) {
         res.status(401).json({
           error: 'Invalid name',
@@ -182,7 +176,7 @@ export class API {
 
       const hashPWD: string = await this.hashPassword(data.password)
 
-      if (await this.user.register(data.name, hashPWD, data.role)) {
+      if (await this.user.register(data.name, hashPWD)) {
         res.status(200).json({
           info: 'Succesfuly Registerd',
         })
@@ -414,14 +408,36 @@ export class API {
   }
 
   private async changeUserPassword(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    const user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)
+    if (!user) {
       return;
     }
+
+    const data: any = req.body
+
+    if (!data.newpassword) {
+      res.status(401).json({
+        error: 'Invalid new password',
+      })
+      return;
+    }
+    if (
+      !data.oldpassword ||
+      (await bcrypt.compare(data.oldpassword, user.passwdhash))
+      ) {
+      res.status(401).json({
+        error: 'Invalid old password',
+      })
+      return;
+    }
+
+    this.user.changeUserPasswd(String(user.name), await this.hashPassword(data.newpassword))
 
   }
 
   private async changeUserName(req: Request, res: Response) {
-    if (!await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)) {
+    const user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator', 'User'], res)
+    if (!user) {
       return;
     }
 
