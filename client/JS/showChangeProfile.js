@@ -46,7 +46,7 @@ function showProfile() {
     userProfile.appendChild(allPostsDiv);
     //Information about all user posts
     for (let i = 0; i < allPosts.length; i++) {
-        if (allPosts[i].Author == "Beb") {
+        if (allPosts[i].Author == localStorage.getItem("username")) {
             //DOM
             let post = document.createElement("div");
             let info = document.createElement("div");
