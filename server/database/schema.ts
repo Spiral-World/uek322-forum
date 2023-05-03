@@ -64,7 +64,7 @@ const CHECK_IF_USER_EXISTS = async (
     name: string
   ): Promise<boolean> => {
     try {
-      const arrayOfRoles = await sql(`SELECT * FROM users WHERE name = '${name}'`)
+      const arrayOfRoles = await sql(`SELECT * FROM users WHERE name = '${name}' OR role = '${name}'`)
       if (arrayOfRoles.length <= 0) {
         return true
       }

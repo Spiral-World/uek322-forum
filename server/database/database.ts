@@ -34,6 +34,7 @@ export class Database {
   private initializeDBSchema = async () => {
     console.log('Initializing DB schema...')
     // users depends on roles, post depends on users and likes and comments depend on user and post
+
     await this.executeSQL(ROLES_TABLE)
     if (await CHECK_IF_ROLE_EXISTS(this.executeSQL, 'Admin')) {
       await this.executeSQL(ROLES_TABLE_CONTENT1)
@@ -44,6 +45,7 @@ export class Database {
     if (await CHECK_IF_ROLE_EXISTS(this.executeSQL, 'User')) {
       await this.executeSQL(ROLES_TABLE_CONTENT3)
     }
+
     await this.executeSQL(USER_TABLE)
     if (await CHECK_IF_USER_EXISTS(this.executeSQL, 'Admin')) {
       await this.executeSQL(CREATE_DEFAULT_ADMIN)
@@ -72,10 +74,14 @@ export class Database {
   }
 
   preventSQLInjection(text: string) {
-    const onlyLettersPattern = /^[A-Za-z0-9$/.@#*+%&|()=?]+$/
+    text = text.replace(/'/g, "\\'")
+    /*
+    // Regular expresions are not needed, but maybe in the future
+    const onlyLettersPattern = /^[A-Za-z0-9\s$/@#*+%&()=.'-?]+$/
     if (!text.match(onlyLettersPattern)) {
       return null
     }
+    */
     return text
   }
 }
