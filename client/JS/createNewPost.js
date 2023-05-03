@@ -166,7 +166,7 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     commentWindow.appendChild(commentBody);
     commentWindow.appendChild(commentFooter);
     postWindow.appendChild(commentWindow);
-    postsWindow.appendChild(postWindow);
+    postsWindow.insertBefore(postWindow, postsWindow.firstChild);
     //Add comments on auto creation
     if (comments != 0) {
         for (let i = 0; i < comments.length; i++) {

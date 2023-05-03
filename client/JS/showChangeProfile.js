@@ -51,7 +51,13 @@ function showProfile() {
             let post = document.createElement("div");
             let info = document.createElement("div");
             //Text
-            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + allPosts[i].Comments.length;
+            let comment;
+            if (allPosts[i].Comments.length !== undefined) {
+                comment = allPosts[i].Comments.length
+            } else {
+                comment = 0;
+            }
+            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + comment;
             //Styles 
             post.className = "text-[1rem] border-2";
             //Appends
