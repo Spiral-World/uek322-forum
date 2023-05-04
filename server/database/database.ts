@@ -73,7 +73,7 @@ export class Database {
     }
   }
 
-  preventSQLInjection(text: string) {
+  public preventSQLInjection(text: string): string {
     text = text.replace(/'/g, "\\'")
     /*
     // Regular expresions are not needed, but maybe in the future
