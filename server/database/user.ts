@@ -126,7 +126,7 @@ export class User {
     return false
   }
 
-  async banOrUnbanUser(id: string, ban: boolean) {
+  async banOrUnbanUser(id: string, ban: boolean): Promise<boolean> {
     if (
       await this._database.executeSQL(
         `UPDATE users SET ban = ${ban} WHERE id = '${this._database.preventSQLInjection(
