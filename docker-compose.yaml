@@ -26,6 +26,14 @@ services:
       - MYSQL_ROOT_PASSWORD=supersecret123
     ports:
       - 9200:80
+  
+  webserver:
+    image: dominicstreit/uek322-forum
+    ports:
+      - 4200:4200
+    restart: always
+    depends_on:
+      - mariadb
 
 volumes:
   m223_project_mariadb:

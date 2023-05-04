@@ -1,12 +1,11 @@
 import express, { Express, Request, Response } from 'express'
-// { WebSocketServer } from './websocketserverdirectory'
 import { API } from './api'
 import http from 'http'
 import { resolve, dirname } from 'path'
 import { Database, User, Post } from './database'
 
 // Middleware used to get the request body
-import * as bodyParser from 'body-parser'
+import bodyParser from 'body-parser'
 
 // Middleware used for the session token
 import cookieParser from 'cookie-parser'
@@ -14,9 +13,7 @@ import cookieParser from 'cookie-parser'
 class Backend {
   // Properties
   private _app: Express
-  //private _WebSocketServer: WebSocketServer
   private _database: Database
-  private _env: string
   private _server: http.Server
   private _API: API
 
@@ -64,9 +61,7 @@ class Backend {
     this._user = new User(this._database)
     this._post = new Post(this._database)
 
-    //this._WebSocketServer = new WebSocketServer(this._server)
     this._API = new API(this._app, this._user, this._post)
-    this._env = process.env.NODE_ENV || 'development'
 
     this.setupStaticFiles()
     this.setupRoutes()
@@ -86,11 +81,9 @@ class Backend {
   }
 
   private startServer(): void {
-    if (this._env === 'production') {
-      this._server.listen(3000, () => {
-        console.log('Server is listening!')
-      })
-    }
+    this._server.listen(4200, () => {
+      console.log('Server is listening!')
+    })
   }
 }
 
