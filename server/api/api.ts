@@ -9,6 +9,14 @@ interface AUser {
   name: string
   passwdhash: string
   roll: string
+  ban: number
+}
+
+interface APost {
+  id: number
+  titel: string
+  content: string
+  userid: number
 }
 
 export class API {
@@ -36,6 +44,7 @@ export class API {
     this.app.delete('/api/User', this.deleteUser.bind(this))
     this.app.get('/api/AllUsers', this.getAllUsers.bind(this))
     this.app.get('/api/WhoAmI', this.whoAmI.bind(this))
+    this.app.put('/api/UserRole', this.changeRoll.bind(this))
     //post
     this.app.get('/api/AllPosts', this.getAllPosts.bind(this))
     this.app.post('/api/Like', this.Like.bind(this))
@@ -61,7 +70,7 @@ export class API {
     try {
       let id = await verify(token, this.SECRET).id
 
-      const aUser = await this.user.getOneUserbyId(String(id))
+      const aUser: AUser[] = await this.user.getOneUserbyId(String(id))
 
       if (aUser[0].ban == 1) {
         if (res === undefined) {
@@ -146,7 +155,7 @@ export class API {
 
       console.log(`UserID: ${USER_ID} Logged In`)
 
-      res.status(200).json({
+      res.status(201).json({
         info: 'Successfuly created Token',
       })
     } catch (e) {
@@ -162,13 +171,13 @@ export class API {
       const data: any = req.body
 
       if (!data.name) {
-        res.status(401).json({
+        res.status(406).json({
           error: 'Invalid name',
         })
         return
       }
       if (!data.password) {
-        res.status(401).json({
+        res.status(406).json({
           error: 'Invalid password',
         })
         return
@@ -177,12 +186,12 @@ export class API {
       const hashPWD: string = await this.hashPassword(String(data.password))
 
       if (await this.user.register(String(data.name), hashPWD)) {
-        res.status(200).json({
+        res.status(201).json({
           info: 'Succesfuly Registerd',
         })
         return
       }
-      res.status(400).json({
+      res.status(406).json({
         error:
           'Unable to Registerd, PLease Use A-Z, a-z, 0-9, $, / or . In Your Provided Data Or use another Name',
       })
@@ -222,19 +231,19 @@ export class API {
     const data: any = req.body
 
     if (!data.titel) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid title',
       })
       return
     }
     if (!data.content) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid content',
       })
       return
     }
     if (!user.id) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid id',
       })
       return
@@ -242,7 +251,7 @@ export class API {
 
     this.post.createPost(String(data.titel), String(data.content), String(user.id))
 
-    res.status(200).json({
+    res.status(201).json({
       info: 'Created a Post',
     })
     return
@@ -253,7 +262,7 @@ export class API {
     const data: any = req.body
 
     if (!data.postid) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid postid',
       })
       return
@@ -261,7 +270,7 @@ export class API {
 
     let user = await this.validateUser(req.cookies.token, ['User'])
     if (user !== false) {
-      const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
+      const MY_POSTS: APost[] = await this.post.getOnePersonsPosts(String(user.id))
 
       for (let i = 0; i < MY_POSTS.length; i++) {
         const element = MY_POSTS[i]
@@ -274,7 +283,7 @@ export class API {
           return
         }
       }
-      res.status(400).json({
+      res.status(404).json({
         error: 'didnt delete a post',
       })
       return
@@ -284,7 +293,7 @@ export class API {
       await this.post.deletePost(String(data.postid))
       res.status(200).json({
         info:
-          'deleted post: ' + data.postid + ', This Post Could Also Not Exist',
+          'deleted post, This Post Could Also Not Exist',
       })
       return
     }
@@ -299,19 +308,19 @@ export class API {
     const data: any = req.body
 
     if (!data.postid) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid postid',
       })
       return
     }
     if (!data.titel) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid titel',
       })
       return
     }
     if (!data.content) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid content',
       })
       return
@@ -319,7 +328,7 @@ export class API {
 
     let user = await this.validateUser(req.cookies.token, ['User'])
     if (user !== false) {
-      const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
+      const MY_POSTS: APost[] = await this.post.getOnePersonsPosts(String(user.id))
 
       for (let i = 0; i < MY_POSTS.length; i++) {
         const element = MY_POSTS[i]
@@ -336,7 +345,7 @@ export class API {
           return
         }
       }
-      res.status(400).json({
+      res.status(404).json({
         error: 'didnt change a post',
       })
       return
@@ -350,7 +359,7 @@ export class API {
       )
       res.status(200).json({
         info:
-          'changed post: ' + data.postid + ', This Post Could Also Not Exist',
+          'changed post, This Post Could Also Not Exist',
       })
       return
     }
@@ -365,7 +374,7 @@ export class API {
     if (!user) {
       return
     }
-    const MY_POSTS = await this.post.getOnePersonsPosts(String(user.id))
+    const MY_POSTS: APost[] = await this.post.getOnePersonsPosts(String(user.id))
 
     if (!MY_POSTS) {
       res.status(401).json({
@@ -412,13 +421,13 @@ export class API {
       const data: any = req.body
 
       if (!data.username) {
-        res.status(401).json({
+        res.status(406).json({
           error: 'Invalid username',
         })
         return
       }
 
-      this.user.deleteUserbyName(String(data.username))
+      await this.user.deleteUserbyName(String(data.username))
       res.status(200).json({
         info: 'Deleted a User: ' + data.username,
       })
@@ -439,7 +448,7 @@ export class API {
     const data: any = req.body
 
     if (!data.newpassword) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid new password',
       })
       return
@@ -448,7 +457,7 @@ export class API {
       !data.oldpassword ||
       !(await bcrypt.compare(String(data.oldpassword), user.passwdhash))
     ) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid old password',
       })
       return
@@ -465,7 +474,7 @@ export class API {
       })
       return
     }
-    res.status(401).json({
+    res.status(404).json({
       error: 'didnt change the password',
     })
     return
@@ -484,7 +493,7 @@ export class API {
     const data: any = req.body
 
     if (!data.newName) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid newName',
       })
       return
@@ -496,7 +505,7 @@ export class API {
       })
       return
     }
-    res.status(401).json({
+    res.status(404).json({
       error:
         'the provided name didnt check with the layout or probably alredy exists',
     })
@@ -516,14 +525,14 @@ export class API {
     const data: any = req.body
 
     if (!data.postid) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid post id',
       })
       return
     }
 
     if (!(typeof data.like == "boolean")) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid like',
       })
       return
@@ -539,7 +548,7 @@ export class API {
       })
       return
     }
-    res.status(400).json({
+    res.status(404).json({
       error: 'Unsuccessful',
     })
   }
@@ -557,14 +566,14 @@ export class API {
     const data: any = req.body
 
     if (!data.postid) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid post id',
       })
       return
     }
 
     if (!data.text) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid post id',
       })
       return
@@ -582,7 +591,7 @@ export class API {
       })
       return
     }
-    res.status(400).json({
+    res.status(404).json({
       error: 'Failed to comment',
     })
     return
@@ -592,14 +601,14 @@ export class API {
     const data: any = req.body
 
     if (!data.postid) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid comment id',
       })
       return
     }
 
     if (!data.text) {
-      res.status(401).json({
+      res.status(406).json({
         error: 'Invalid comment text',
       })
       return
@@ -621,7 +630,7 @@ export class API {
         }
       }
     
-      res.status(401).json({
+      res.status(404).json({
         error: 'Didnt change',
       })
       return
@@ -634,7 +643,7 @@ export class API {
         })
         return
       }
-      res.status(401).json({
+      res.status(404).json({
         error: 'Didnt change',
       })
       return
@@ -642,13 +651,47 @@ export class API {
   }
 
   private async deleteComment(req: Request, res: Response) {
-    if (
-      !(await this.validateUser(
-        req.cookies.token,
-        ['Admin', 'Moderator', 'User'],
-        res
-      ))
-    ) {
+    const data: any = req.body
+
+    if (!data.commentid) {
+      res.status(406).json({
+        error: 'Invalid comment id',
+      })
+      return
+    }
+
+    let user = await this.validateUser(req.cookies.token, ['User'])
+    if (user !== false) {
+      const ALL_COMMENTS = await this.post.getAllComments()
+
+      for (let i = 0; i < ALL_COMMENTS.length; i++) {
+        const element = ALL_COMMENTS[i];
+        
+        if (element.userId == user.id) {
+          await this.post.deleteAComment(String(data.commentid))
+          res.status(200).json({
+            info: 'deleted the comment',
+          })
+          return
+        }
+      }
+    
+      res.status(404).json({
+        error: 'Didnt delete',
+      })
+      return
+    }
+    user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
+    if (user !== false) {
+      if (await this.post.deleteAComment(String(data.commentid))) {
+        res.status(200).json({
+          info: 'comment deleted',
+        })
+        return
+      }
+      res.status(404).json({
+        error: 'Didnt delete',
+      })
       return
     }
   }
@@ -657,11 +700,79 @@ export class API {
     if (
       !(await this.validateUser(
         req.cookies.token,
-        ['Admin', 'Moderator', 'User'],
+        ['Admin'],
         res
       ))
     ) {
       return
     }
+
+    const data: any = req.body
+
+    if (!data.userid) {
+      res.status(406).json({
+        error: 'Invalid userid',
+      })
+      return
+    }
+
+    if (!(typeof data.ban == "boolean")) {
+      res.status(406).json({
+        error: 'Invalid ban',
+      })
+      return
+    }
+
+    if (await this.user.banOrUnbanUser(String(data.userid), data.ban) {
+      res.status(200).json({
+        info: 'Un/Banned User',
+      })
+      return
+    }
+    res.status(404).json({
+      error: 'unsuccessful',
+    })
+    return
+
+  }
+
+  async changeRoll(req: Request, res: Response) {
+    if (
+      !(await this.validateUser(
+        req.cookies.token,
+        ['Admin'],
+        res
+      ))
+    ) {
+      return
+    }
+
+    const data: any = req.body
+
+    if (!data.name) {
+      res.status(406).json({
+        error: 'Invalid comment id',
+      })
+      return
+    }
+
+    if (!data.role) {
+      res.status(406).json({
+        error: 'Invalid comment id',
+      })
+      return
+    }
+
+    if (await this.user.changeUserRoll(String(data.name), String(data.role))) {
+      res.status(200).json({
+        info: 'Changed role',
+      })
+      return
+    }
+    res.status(404).json({
+      error: 'unsuccessful, role or user does not exist',
+    })
+    return
+
   }
 }
