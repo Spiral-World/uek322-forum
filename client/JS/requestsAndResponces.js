@@ -90,6 +90,13 @@ function postLogin(data) {
     request.onreadystatechange = requestPost;
     request.send(JSON.stringify(data));
 }
+function postLogout() {
+    request = new XMLHttpRequest();
+    request.open("POST", "http://localhost:4200/api/Logout");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = requestPost;
+    request.send();
+}
 function postRegister(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Register");
@@ -141,5 +148,8 @@ function requestPost(event) {
                 document.location.href = "mainPage.html";
             }, 1000)
         }
+    } else if (path.includes("api/Logout")) {
+        console.log(request.responseText);
+        document.location.href = "http://localhost:4200/";
     }
 }

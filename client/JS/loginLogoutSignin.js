@@ -41,8 +41,8 @@ function signIn() {
 }
 
 function logout() {
-    localStorage.removeItem("username");    
-    document.location.href = "http://localhost:4200/";
+    localStorage.removeItem("username"); 
+    postLogout();   
 }
 
 function falseRepeat() {
