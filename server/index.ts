@@ -31,11 +31,7 @@ class Backend {
   public get server(): http.Server {
     return this._server
   }
-  /*
-  public get webSocketServer(): WebSocketServer {
-    return this._WebSocketServer
-  }
-*/
+
   public get API(): API {
     return this._API
   }

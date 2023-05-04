@@ -65,6 +65,9 @@ export class User {
         if (alreadyExists.length == 0) {
             return false
         }
+        if (this._database.preventSQLInjection(newName) == null) {
+            return false
+        }
         if (await this._database.executeSQL(`UPDATE users SET name = '${this._database.preventSQLInjection(newName)}' WHERE name = '${this._database.preventSQLInjection(Oldname)}';`)) {
             return true
         }
