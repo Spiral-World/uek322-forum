@@ -13,7 +13,7 @@ import {
   CREATE_DEFAULT_ADMIN,
   CREATE_DEFAULT_MODERATOR,
   CREATE_DEFAULT_USER,
-  CHECK_IF_USER_EXISTS
+  CHECK_IF_USER_EXISTS,
 } from './schema'
 
 export class Database {

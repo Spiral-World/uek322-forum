@@ -723,7 +723,7 @@ export class API {
       return
     }
 
-    if (await this.user.banOrUnbanUser(String(data.userid), data.ban) {
+    if (await this.user.banOrUnbanUser(String(data.userid), data.ban)) {
       res.status(200).json({
         info: 'Un/Banned User',
       })

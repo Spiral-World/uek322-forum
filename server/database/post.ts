@@ -174,7 +174,11 @@ export class Post {
     likeing: boolean
   ): Promise<boolean> {
     try {
-      let doesThePostExist: object[] = await this._database.executeSQL(`SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(postId)}`)
+      let doesThePostExist: object[] = await this._database.executeSQL(
+        `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+          postId
+        )}`
+      )
       if (doesThePostExist.length <= 0) {
         return false
       }
@@ -218,7 +222,11 @@ export class Post {
     postId: string,
     text: string
   ): Promise<boolean> {
-    let doesThePostExist: object[] = await this._database.executeSQL(`SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(postId)}`)
+    let doesThePostExist: object[] = await this._database.executeSQL(
+      `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+        postId
+      )}`
+    )
     if (doesThePostExist.length <= 0) {
       return false
     }
