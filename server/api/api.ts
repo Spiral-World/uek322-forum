@@ -356,14 +356,19 @@ export class API {
     }
     user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
     if (user !== false) {
-      await this.post.changePostData(
+      if (await this.post.changePostData(
         String(data.postid),
         String(data.titel),
         String(data.content)
-      )
-      res.status(200).json({
-        info:
-          'changed post, This Post Could Also Not Exist',
+      )) {
+        res.status(200).json({
+          info:
+            'changed post',
+        })
+        return
+      }
+      res.status(404).json({
+        error: 'post does not exist',
       })
       return
     }
