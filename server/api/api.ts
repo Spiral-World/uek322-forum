@@ -1,7 +1,7 @@
 import { Request, Response, Express } from 'express'
 import { User, Post } from '../database'
 
-import { sign, verify } from 'jsonwebtoken'
+import pkg from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
 
 import { AUser, APost } from '../interface/interface'
@@ -56,7 +56,7 @@ export class API {
     res?
   ): Promise<AUser | boolean> {
     try {
-      let id = await verify(token, this.SECRET).id
+      let id = await pkg.verify(token, this.SECRET).id
 
       const aUser: AUser[] = await this.user.getOneUserbyId(String(id))
 
@@ -128,7 +128,14 @@ export class API {
         return
       }
 
-      const aUser: Array<AUser> = await this.user.getOneUserbyName(String(data.name))
+      const aUser: AUser[] = await this.user.getOneUserbyName(String(data.name))
+
+      if (aUser[0].ban == 1) {
+        res.status(403).json({
+          error: 'You Are Not alowed to do this',
+        })
+        return
+      }
 
       if (
         aUser.length == 0 ||
@@ -142,7 +149,7 @@ export class API {
 
       const USER_ID = aUser[0].id
 
-      const token = sign({ id: USER_ID }, this.SECRET, {
+      const token = pkg.sign({ id: USER_ID }, this.SECRET, {
         expiresIn: '5h',
       })
 
@@ -748,14 +755,14 @@ export class API {
 
     if (!data.name) {
       res.status(406).json({
-        error: 'Invalid comment id',
+        error: 'Invalid name',
       })
       return
     }
 
     if (!data.role) {
       res.status(406).json({
-        error: 'Invalid comment id',
+        error: 'Invalid role',
       })
       return
     }
