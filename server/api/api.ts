@@ -619,7 +619,7 @@ export class API {
       for (let i = 0; i < ALL_COMMENTS.length; i++) {
         const element = ALL_COMMENTS[i];
         
-        if (element.userId == user.id) {
+        if (element.userid == user.id) {
           await this.post.changeAComment(String(data.postid), String(data.text))
           res.status(200).json({
             info: 'changed the comment',
@@ -665,7 +665,7 @@ export class API {
       for (let i = 0; i < ALL_COMMENTS.length; i++) {
         const element = ALL_COMMENTS[i];
         
-        if (element.userId == user.id) {
+        if (element.userid == user.id) {
           await this.post.deleteAComment(String(data.commentid))
           res.status(200).json({
             info: 'deleted the comment',

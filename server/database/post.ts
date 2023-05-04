@@ -266,9 +266,9 @@ export class Post {
   async changeAComment(id: string, text: string): Promise<boolean> {
     if (
       await this._database.executeSQL(
-        `UPDATE comments SET text = ${this._database.preventSQLInjection(
+        `UPDATE comments SET text = '${this._database.preventSQLInjection(
           text
-        )}} WHERE id = ${this._database.preventSQLInjection(id)}`
+        )}' WHERE id = ${this._database.preventSQLInjection(id)}`
       )
     ) {
       return true
