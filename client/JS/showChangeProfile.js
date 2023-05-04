@@ -1,5 +1,4 @@
-getAllPosts();
-
+getWhoAmI(2);
 function showProfile() {
     const userFunctions = document.getElementById("userFunctions");
     const userProfile = document.getElementById("userProfile");

@@ -57,7 +57,7 @@ function createNewPost() {
     }
 }
 
-function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0) {
+function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0, role = 0) {
     //Create DOM elements 
     const postsWindow = document.getElementById("postsWindow");
     const postWindow = document.createElement("div");
@@ -169,8 +169,15 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0)
     postFooter.appendChild(postScore);
     postFooter.appendChild(postCommentsIcon);
     postFooter.appendChild(postComments);
-    postFooter.appendChild(postDelete);
-    postFooter.appendChild(postEdit);
+    if (role.role == "User") {
+        if (postAuthor.innerText == localStorage.getItem("username")) {
+            postFooter.appendChild(postDelete);
+            postFooter.appendChild(postEdit);
+        }  
+    } else {
+        postFooter.appendChild(postDelete);
+        postFooter.appendChild(postEdit);
+    }
     postBody.appendChild(postTitel);
     postBody.appendChild(postText);
     postHeader.appendChild(postAuthor);

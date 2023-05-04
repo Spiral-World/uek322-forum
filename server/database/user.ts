@@ -150,7 +150,7 @@ export class User {
   async changeUserRoll(name: string, newRoll: string): Promise<boolean> {
     if (
       await this._database.executeSQL(
-        `UPDATE users SET roll = '${this._database.preventSQLInjection(
+        `UPDATE users SET role = '${this._database.preventSQLInjection(
           newRoll
         )}' WHERE name = '${this._database.preventSQLInjection(name)}';`
       )

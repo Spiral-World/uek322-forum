@@ -31,12 +31,12 @@ function getAllUserPosts() {
     request.onreadystatechange = requestGet;
     request.send();
 }
-function getAllPosts(whoI = 0) {
+function getAllPosts(whoI = 0, add = 0) {
     request = new XMLHttpRequest();
     request.open("GET", "http://localhost:4200/api/AllPosts");
     request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = function() {
-        requestGet(event, whoI);
+        requestGet(event, whoI, add);
     };
     request.send();
 }
@@ -47,18 +47,23 @@ function getAllUsers() {
     request.onreadystatechange = requestGet;
     request.send();
 }
-function requestGet(event, whoI = 0) {
+function requestGet(event, whoI = 0, add = 0) {
     if (request.readyState < 4) {
         return;
     } 
 
     let path = event.currentTarget.responseURL;
-    if (whoI == 1) {
+    if (whoI == 2) {
+        if (JSON.parse(request.responseText).role == "Admin") {
+            document.getElementById("adminZone").style.display = "block";
+        }
+        getAllPosts(3, request.responseText);
+    } else if (whoI == 1) {
         getAllPosts(request.responseText);
-    } else if (path.includes("api/AllPosts") && whoI != 0) {
+    } else if (path.includes("api/AllPosts") && whoI != 3) {
         const allPosts = JSON.parse(request.responseText);
         for (let i = 0; i < allPosts.length; i++) {
-            if (whoI.role !== "User") {
+            if (allPosts[i].author == localStorage.getItem("username")) {
                 //DOM
                 let post = document.createElement("div");
                 let info = document.createElement("div");
@@ -83,10 +88,11 @@ function requestGet(event, whoI = 0) {
                 userProfile.appendChild(post);
             }
         }
-    } else if (path.includes("api/AllPosts")) {
+    } else if (path.includes("api/AllPosts") && whoI == 3) {
         const allPosts = JSON.parse(request.responseText);
-        for (let i = 0; i < allPosts.length; i++) {
-            addPost(allPosts[i].title, allPosts[i].content, allPosts[i].author, allPosts[i].likes, allPosts[i].likes, allPosts[i].comments, allPosts[i].id);
+        console.log(add);
+        for (let i = allPosts.length-1; i >= 0; i--) {
+            addPost(allPosts[i].title, allPosts[i].content, allPosts[i].author, allPosts[i].likes, allPosts[i].likes, allPosts[i].comments, allPosts[i].id, JSON.parse(add));
         }
     } else if (path.includes("api/AllUsers")) {
         const allUsers = JSON.parse(request.responseText);
