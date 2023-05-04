@@ -706,7 +706,7 @@ export class API {
     }
 
     const data: any = req.body
-
+    console.log(data);
     if (!data.userid) {
       res.status(406).json({
         error: 'Invalid userid',

@@ -1,8 +1,4 @@
-const allPosts = [
-    {"Author": "Beb", "Titel": "Attack on titan", "Text": "Bla bla bla bla bla bla", "Likes": 5, "Dislikes": 10, "Comments": [{"Author":"Mat", "Text":"Bcwqqwcqwcqw"},{"Author":"Jop", "Text":"Sasi hui pidor"}]},
-    {"Author": "Beb", "Titel": "3 world war", "Text": "Bla bla bla bla bla bla", "Likes": 10, "Dislikes": 100, "Comments": {}},
-    {"Author": "Dominic", "Titel": "Python programming", "Text": "Bla bla bla bla bla bla", "Likes": 2, "Dislikes": 0, "Comments": {}}
-];
+getAllPosts();
 
 function showProfile() {
     const userFunctions = document.getElementById("userFunctions");
@@ -20,7 +16,7 @@ function showProfile() {
     //Text
     name.innerHTML = "Username: " + "<strong>" + localStorage.getItem("username") + "</strong>";
     changeData.innerText = "Change username or password";
-    allPostsLabel.innerText = "All your posts:";
+    allPostsLabel.innerText = "All posts:";
     //Styles
     header.className = "border-b-2";
     backArrow.className = "bg-[url('../materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
@@ -42,29 +38,10 @@ function showProfile() {
     userProfile.appendChild(header);
     userProfile.appendChild(name);
     userProfile.appendChild(changeData);
-    allPostsDiv.appendChild(allPostsLabel);
+    allPostsDiv.appendChild(allPostsLabel);undefined
     userProfile.appendChild(allPostsDiv);
     //Information about all user posts
-    for (let i = 0; i < allPosts.length; i++) {
-        if (allPosts[i].Author == localStorage.getItem("username")) {
-            //DOM
-            let post = document.createElement("div");
-            let info = document.createElement("div");
-            //Text
-            let comment;
-            if (allPosts[i].Comments.length !== undefined) {
-                comment = allPosts[i].Comments.length
-            } else {
-                comment = 0;
-            }
-            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + comment;
-            //Styles 
-            post.className = "text-[1rem] border-2";
-            //Appends
-            post.appendChild(info);
-            userProfile.appendChild(post);
-        }
-    }
+    getWhoAmI(1);
 }
 
 function changeDataWindow() {
