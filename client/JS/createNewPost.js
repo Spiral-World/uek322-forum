@@ -144,6 +144,12 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
     });
     postEdit.addEventListener("click", function() {
         if (postText.contentEditable == "true") {
+            const data = {
+                postid: postId,
+                titel: postTitel.innerText,
+                content: postText.innerText
+            };
+            putPost(data);
             postText.contentEditable = "false";
             postTitel.contentEditable = "false";
             postText.className = "ml-6 break-words mb-2";

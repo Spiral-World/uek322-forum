@@ -9,6 +9,15 @@ function putUserRole(data) {
     request.send(JSON.stringify(data));
 }
 
+function putPost(data) {
+    request = new XMLHttpRequest();
+    console.log(data);
+    request.open("PUT", "http://localhost:4200/api/Post");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = requestPut;
+    request.send(JSON.stringify(data));
+}
+
 function requestPut() {
     if (request.readyState < 4) {
         return;
