@@ -41,7 +41,7 @@ export class Post {
 
   async getAllPosts(): Promise<object[]> {
     let arrayOfPosts: object[] = await this._database.executeSQL(
-      `SELECT * FROM posts`
+      `SELECT * FROM posts ORDER BY id DESC`
     )
 
     let newPostsWithCommentsLikes: object[] = []
@@ -174,6 +174,14 @@ export class Post {
     likeing: boolean
   ): Promise<boolean> {
     try {
+      let doesThePostExist: object[] = await this._database.executeSQL(
+        `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+          postId
+        )}`
+      )
+      if (doesThePostExist.length <= 0) {
+        return false
+      }
       let doesItExist: object[] = await this._database.executeSQL(
         `SELECT * FROM likes WHERE userid = ${this._database.preventSQLInjection(
           userID
@@ -212,15 +220,23 @@ export class Post {
   async commentOnAPost(
     userID: string,
     postId: string,
-    test: string
+    text: string
   ): Promise<boolean> {
+    let doesThePostExist: object[] = await this._database.executeSQL(
+      `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+        postId
+      )}`
+    )
+    if (doesThePostExist.length <= 0) {
+      return false
+    }
     if (
       await this._database
         .executeSQL(`INSERT INTO comments (id, userid, postid, text) VALUES (
             NULL,
             ${this._database.preventSQLInjection(userID)},
             ${this._database.preventSQLInjection(postId)},
-            '${this._database.preventSQLInjection(test)}'
+            '${this._database.preventSQLInjection(text)}'
         );`)
     ) {
       return true
@@ -239,6 +255,10 @@ export class Post {
       return true
     }
     return false
+  }
+
+  async getAllComments() {
+    return await this._database.executeSQL(`SELECT * FROM comments`)
   }
 
   async changeAComment(id: string, text: string): Promise<boolean> {
