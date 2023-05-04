@@ -83,22 +83,24 @@ function postPost() {
     request.onreadystatechange = requestPost;
     request.send();
 }
-function postLogin() {
+function postLogin(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Login");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = requestPost;
+    request.send(JSON.stringify(data));
+}
+function postLogout() {
+    request = new XMLHttpRequest();
+    request.open("POST", "http://localhost:4200/api/Logout");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPost;
     request.send();
 }
-function postRegister(name, password, role) {
-    const data = {
-        name: name,
-        password: password,
-        role: role
-    }
-    console.log(JSON.stringify(data));
+function postRegister(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Register");
-    request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPost;
     request.send(JSON.stringify(data));
 }
@@ -121,9 +123,33 @@ function postBanUser() {
     request.send();
 }
 
-function requestPost() {
+function requestPost(event) {
     if (request.readyState < 4) {
         return;
     } 
-    console.log(request.responseText);
+    let path = event.currentTarget.responseURL;
+    if (path.includes("api/Login")) {
+        if (request.responseText.includes("error")) {
+            customAlert(1, "Invalide username or password");
+        } else {
+            customAlert(3, "Successfully login");
+            setTimeout(function () {
+                localStorage.setItem("username", username.value);
+                document.location.href = "mainPage.html";
+              }, 1000)
+        }
+    } else if (path.includes("api/Register")) {
+        if (request.responseText.includes("error")) {
+            customAlert(1, "This account is already created");
+        } else {
+            customAlert(3, "Successfully created account");
+            setTimeout(function () {
+                localStorage.setItem("username", username.value);
+                document.location.href = "mainPage.html";
+            }, 1000)
+        }
+    } else if (path.includes("api/Logout")) {
+        console.log(request.responseText);
+        document.location.href = "http://localhost:4200/";
+    }
 }
