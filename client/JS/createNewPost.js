@@ -47,12 +47,17 @@ function createNewPost() {
     } else if (postText.value == "") {
         customAlert(2, "Please provide some text");
     } else {
-        addPost(postTitel.value, postText.value, localStorage.getItem("username"), String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16)), 5, 10);
+        const postInfo = {
+            titel: postTitel.value,
+            content: postText.value
+        }
+        postPost(postInfo);
+        addPost(postTitel.value, postText.value, localStorage.getItem("username"), 0, 0);
         backArrow.click();
     }
 }
 
-function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
+function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0) {
     //Create DOM elements 
     const postsWindow = document.getElementById("postsWindow");
     const postWindow = document.createElement("div");
@@ -60,7 +65,6 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const postBody = document.createElement("div");
     const postFooter = document.createElement("div");
     const postAuthor = document.createElement("div");
-    const postTime = document.createElement("div");
     const postTitel = document.createElement("div");
     const postText = document.createElement("div");
     const postScore = document.createElement("div");
@@ -79,16 +83,23 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const commentInput = document.createElement("input");
     const commentSend = document.createElement("button");
     //Text
-    postTime.innerText = time;
     postAuthor.innerText = author;
     postTitel.innerText = titel;
     postText.innerText = text;
-    postLikes.innerText = likes;
-    postDislikes.innerText = dislikes;
-    if (comments.length !== undefined) {
-        postComments.innerText = comments.length;
+    if (likes.length === undefined) {
+        postLikes.innerText = 0;
     } else {
+        postLikes.innerText = likes.length;
+    }
+    if (dislikes.length === undefined) {
+        postDislikes.innerText = 0;
+    } else {
+        postDislikes.innerText = dislikes.length;
+    }
+    if (comments.length === undefined) {
         postComments.innerText = 0;
+    } else {
+        postComments.innerText = comments.length;
     }
     commentInput.placeholder = "Comment text";
     //Styles
@@ -100,7 +111,6 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postDislikes.className = "text-[1rem]";
     postComments.className = "text-[1rem] mt-[0.2rem] ml-[0.1rem]";
     postAuthor.className = "ml-6 text-[1.2rem]";
-    postTime.className = "mr-6 ml-auto";
     postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2";
     postText.className = "ml-6 break-words mb-2";
     postScore.className = "rounded-full border-2 flex flex-row py-1 px-1";
@@ -128,6 +138,8 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
         commentInput.value = "";
     });
     postDelete.addEventListener("click", function() {
+        const id = {postid: postId};
+        deletePost(id);
         postWindow.remove();
     });
     postEdit.addEventListener("click", function() {
@@ -162,7 +174,6 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postBody.appendChild(postTitel);
     postBody.appendChild(postText);
     postHeader.appendChild(postAuthor);
-    postHeader.appendChild(postTime);
     postWindow.appendChild(postHeader);
     postWindow.appendChild(postBody);
     postWindow.appendChild(postFooter);
@@ -220,7 +231,3 @@ function createComment(author, text, commentField) {
     commentField.appendChild(commentDiv);
 }
 
-for (let i = 0; i < allPosts.length; i++) {
-    testTime = String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16));
-    addPost(allPosts[i].Titel,allPosts[i].Text,allPosts[i].Author, testTime, allPosts[i].Likes, allPosts[i].Dislikes, allPosts[i].Comments);
-}
