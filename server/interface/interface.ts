@@ -2,7 +2,7 @@ export interface AUser {
     id: number
     name: string
     passwdhash: string
-    roll: string
+    role: string
     ban: number
 }
 

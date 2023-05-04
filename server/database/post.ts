@@ -1,6 +1,6 @@
 import { Database } from './database'
 
-import { APost, ALike, AComment } from '../interface/interface'
+import { APost, ALike, AComment, AUser } from '../interface/interface'
 
 export class Post {
   private _database: Database
@@ -51,12 +51,12 @@ export class Post {
     for (let i = 0; i < arrayOfPosts.length; i++) {
       const post: APost = arrayOfPosts[i]
 
-      let personWhoPosted: APost[] = await this._database.executeSQL(
+      let personWhoPosted: AUser[] = await this._database.executeSQL(
         `SELECT name FROM users WHERE id = ${post.userid}`
       )
 
-      let newLikes: object[] = []
-      let likesFromPost: object[] = await this._database.executeSQL(
+      let newLikes: ALike[] = []
+      let likesFromPost: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes`
       )
       for (let index = 0; index < likesFromPost.length; index++) {
@@ -67,8 +67,8 @@ export class Post {
         }
       }
 
-      let newComments: object[] = []
-      let commentsFromPost: object[] = await this._database.executeSQL(
+      let newComments: AComment[] = []
+      let commentsFromPost: AComment[] = await this._database.executeSQL(
         `SELECT * FROM comments`
       )
       for (let index = 0; index < commentsFromPost.length; index++) {
@@ -105,8 +105,8 @@ export class Post {
     for (let i = 0; i < PERSONS_POSTS.length; i++) {
       const post: APost = PERSONS_POSTS[i]
 
-      let newLikes: object[] = []
-      let likesFromPost: object[] = await this._database.executeSQL(
+      let newLikes: ALike[] = []
+      let likesFromPost: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes`
       )
       for (let index = 0; index < likesFromPost.length; index++) {
@@ -117,8 +117,8 @@ export class Post {
         }
       }
 
-      let newComments: object[] = []
-      let commentsFromPost: object[] = await this._database.executeSQL(
+      let newComments: AComment[] = []
+      let commentsFromPost: AComment[] = await this._database.executeSQL(
         `SELECT * FROM comments`
       )
       for (let index = 0; index < commentsFromPost.length; index++) {
@@ -266,9 +266,9 @@ export class Post {
   async changeAComment(id: string, text: string): Promise<boolean> {
     if (
       await this._database.executeSQL(
-        `UPDATE comments SET text = ${this._database.preventSQLInjection(
+        `UPDATE comments SET text = '${this._database.preventSQLInjection(
           text
-        )}} WHERE id = ${this._database.preventSQLInjection(id)}`
+        )}' WHERE id = ${this._database.preventSQLInjection(id)}`
       )
     ) {
       return true
