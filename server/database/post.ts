@@ -1,5 +1,7 @@
 import { Database } from './database'
 
+import { APost, ALike, AComment } from '../interface/interface'
+
 export class Post {
   private _database: Database
 
@@ -39,17 +41,17 @@ export class Post {
     }
   }
 
-  async getAllPosts(): Promise<object[]> {
-    let arrayOfPosts: object[] = await this._database.executeSQL(
+  async getAllPosts(): Promise<APost[]> {
+    let arrayOfPosts: APost[] = await this._database.executeSQL(
       `SELECT * FROM posts ORDER BY id DESC`
     )
 
-    let newPostsWithCommentsLikes: object[] = []
+    let newPostsWithCommentsLikes: APost[] = []
 
     for (let i = 0; i < arrayOfPosts.length; i++) {
-      const post: object = arrayOfPosts[i]
+      const post: APost = arrayOfPosts[i]
 
-      let personWhoPosted: object[] = await this._database.executeSQL(
+      let personWhoPosted: APost[] = await this._database.executeSQL(
         `SELECT name FROM users WHERE id = ${post.userid}`
       )
 
@@ -91,17 +93,17 @@ export class Post {
     return newPostsWithCommentsLikes
   }
 
-  async getOnePersonsPosts(userId: string): Promise<object[] | boolean> {
+  async getOnePersonsPosts(userId: string): Promise<APost[] | boolean> {
     const PERSONS_POSTS = await this._database.executeSQL(
       `SELECT * FROM posts WHERE userid = ${this._database.preventSQLInjection(
         userId
       )}`
     )
 
-    let personsPostsWithCommentsLikes: object[] = []
+    let personsPostsWithCommentsLikes: APost[] = []
 
     for (let i = 0; i < PERSONS_POSTS.length; i++) {
-      const post: object = PERSONS_POSTS[i]
+      const post: APost = PERSONS_POSTS[i]
 
       let newLikes: object[] = []
       let likesFromPost: object[] = await this._database.executeSQL(
@@ -129,7 +131,7 @@ export class Post {
 
       personsPostsWithCommentsLikes.push({
         id: post.id,
-        title: post.title,
+        titel: post.title,
         content: post.content,
         comments: newComments,
         likes: newLikes,
@@ -174,7 +176,7 @@ export class Post {
     likeing: boolean
   ): Promise<boolean> {
     try {
-      let doesThePostExist: object[] = await this._database.executeSQL(
+      let doesThePostExist: APost[] = await this._database.executeSQL(
         `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
           postId
         )}`
@@ -182,7 +184,7 @@ export class Post {
       if (doesThePostExist.length <= 0) {
         return false
       }
-      let doesItExist: object[] = await this._database.executeSQL(
+      let doesItExist: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes WHERE userid = ${this._database.preventSQLInjection(
           userID
         )} AND postid = ${this._database.preventSQLInjection(postId)}`
@@ -222,7 +224,7 @@ export class Post {
     postId: string,
     text: string
   ): Promise<boolean> {
-    let doesThePostExist: object[] = await this._database.executeSQL(
+    let doesThePostExist: APost[] = await this._database.executeSQL(
       `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
         postId
       )}`
@@ -257,7 +259,7 @@ export class Post {
     return false
   }
 
-  async getAllComments() {
+  async getAllComments(): Promise<AComment[]> {
     return await this._database.executeSQL(`SELECT * FROM comments`)
   }
 

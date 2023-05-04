@@ -4,20 +4,7 @@ import { User, Post } from '../database'
 import { sign, verify } from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
 
-interface AUser {
-  id: number
-  name: string
-  passwdhash: string
-  roll: string
-  ban: number
-}
-
-interface APost {
-  id: number
-  titel: string
-  content: string
-  userid: number
-}
+import { AUser, APost } from '../interface/interface'
 
 export class API {
   // Properties
@@ -38,6 +25,7 @@ export class API {
     )
     //User
     this.app.post('/api/Login', this.login.bind(this))
+    this.app.post('/api/Logout', this.logout.bind(this))
     this.app.post('/api/Register', this.register.bind(this))
     this.app.put('/api/UserName', this.changeUserName.bind(this))
     this.app.put('/api/UserPWD', this.changeUserPassword.bind(this))
@@ -66,7 +54,7 @@ export class API {
     token: string,
     privliges: string[],
     res?
-  ): Promise<object | boolean> {
+  ): Promise<AUser | boolean> {
     try {
       let id = await verify(token, this.SECRET).id
 
@@ -112,6 +100,16 @@ export class API {
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
     return hash
+  }
+
+  private async logout(req: Request, res: Response) {
+    res.cookie('token', "", {
+      httpOnly: true,
+    })
+    res.status(200).json({
+      info: 'Logged out',
+    })
+    return
   }
 
   private async login(req: Request, res: Response) {

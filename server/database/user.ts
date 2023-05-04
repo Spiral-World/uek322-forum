@@ -1,5 +1,7 @@
 import { Database } from './database'
 
+import { AUser } from '../interface/interface'
+
 export class User {
   private _database: Database
 
@@ -11,7 +13,7 @@ export class User {
 
   async register(name: string, password: string): Promise<boolean> {
     try {
-      let alreadyExists: object[] = await this._database.executeSQL(
+      let alreadyExists: AUser[] = await this._database.executeSQL(
         `SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(
           name
         )}'`
@@ -54,7 +56,7 @@ export class User {
     }
   }
 
-  async getOneUserbyName(name: string): Promise<object[]> {
+  async getOneUserbyName(name: string): Promise<AUser[]> {
     return await this._database.executeSQL(
       `SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(
         name
@@ -62,20 +64,20 @@ export class User {
     )
   }
 
-  async getOneUserbyId(id: string): Promise<object[]> {
+  async getOneUserbyId(id: string): Promise<AUser[]> {
     return await this._database.executeSQL(
       `SELECT * FROM users WHERE id = ${this._database.preventSQLInjection(id)}`
     )
   }
 
-  async getAllUsers(): Promise<object[]> {
+  async getAllUsers(): Promise<AUser[]> {
     return await this._database.executeSQL(
       `SELECT id, name, role, ban FROM users`
     )
   }
 
   async changeUserName(newName: string, Oldname: string): Promise<boolean> {
-    let alreadyExists: object[] = await this._database.executeSQL(
+    let alreadyExists: AUser[] = await this._database.executeSQL(
       `SELECT * FROM users WHERE name = '${this._database.preventSQLInjection(
         Oldname
       )}';`
@@ -137,7 +139,7 @@ export class User {
     return false
   }
 
-  async isUserBanned(id: string): Promise<object[]> {
+  async isUserBanned(id: string): Promise<AUser[]> {
     return await this._database.executeSQL(
       `SELECT ban FROM users WHERE id = ${this._database.preventSQLInjection(
         id
