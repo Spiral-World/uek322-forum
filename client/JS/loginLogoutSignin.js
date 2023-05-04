@@ -11,8 +11,8 @@ function login() {
             name: username.value,
             password: password.value
         }
-        localStorage.setItem("username", username.value);
-        document.location.href = "mainPage.html";
+
+        postLogin(loginData);
     }
 }
 
@@ -33,20 +33,15 @@ function signIn() {
 
         const registerData = {
             name: username.value,
-            password: password.value,
-            email: email.value,
+            password: password.value
         }
         
         postRegister(registerData);
-
-        localStorage.setItem("username", username.value);
-        document.location.href = "mainPage.html";
     }
 }
 
 function logout() {
-    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("username");    
     document.location.href = "http://localhost:4200/";
 }
 
@@ -54,7 +49,6 @@ function falseRepeat() {
     const password = document.getElementById("password");
     const repeatedPassword = document.getElementById("passwordRepeat");
     const repeatCheck = document.getElementById("falseRepeat");
-    console.log("check");
     if (repeatedPassword.value !== password.value) {
         repeatCheck.innerText = "False";
         repeatCheck.className = "absolute right-[0.75rem] top-0 text-[1.4rem] font-normal text-red-500 px-[0.25rem] bg-white";

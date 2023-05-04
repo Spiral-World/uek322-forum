@@ -117,7 +117,7 @@ export class API {
   private async login(req: Request, res: Response) {
     try {
       const data: any = req.body
-
+      console.log(data);
       if (!data.name) {
         res.status(401).json({
           error: 'Invalid name',
