@@ -36,7 +36,9 @@ function signIn() {
             password: password.value,
             email: email.value,
         }
-    
+        
+        postRegister(registerData);
+
         localStorage.setItem("username", username.value);
         document.location.href = "mainPage.html";
     }
@@ -45,7 +47,7 @@ function signIn() {
 function logout() {
     document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.location.href = "index.html";
+    document.location.href = "http://localhost:4200/";
 }
 
 function falseRepeat() {

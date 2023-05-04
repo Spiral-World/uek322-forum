@@ -143,6 +143,12 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
             postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2 bg-[rgba(252,39,128,0.4)]";
         }  
     });
+    postLikeIcon.addEventListener("click", function() {
+        
+    });
+    postDislikeIcon.addEventListener("click", function() {
+        
+    });
     //Appends
     postScore.appendChild(postLikeIcon);
     postScore.appendChild(postLikes);

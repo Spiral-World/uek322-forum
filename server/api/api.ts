@@ -160,7 +160,7 @@ export class API {
   private async register(req: Request, res: Response) {
     try {
       const data: any = req.body
-
+      console.log(req.body);
       if (!data.name) {
         res.status(401).json({
           error: 'Invalid name',

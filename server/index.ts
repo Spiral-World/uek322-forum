@@ -85,7 +85,7 @@ class Backend {
   private setupRoutes(): void {
     this._app.get('/', (req: Request, res: Response) => {
       const __dirname = resolve(dirname(''))
-      res.sendFile(__dirname + '/client/index.html')
+      res.sendFile(__dirname + '/client/HTML/index.html')
     })
   }
 
