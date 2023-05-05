@@ -17,12 +17,12 @@ export interface AComment {
     id: number
     userid: number
     postid: number
-    likeit: number
+    text: number
 }
 
 export interface ALike {
     id: number
     userid: number
     postid: number
-    text: boolean
+    likeit: boolean
 }

@@ -79,7 +79,7 @@ class Backend {
       res.sendFile(__dirname + '/client/HTML/index.html')
     })
   }
-
+  
   private startServer(): void {
     this._server.listen(4200, () => {
       console.log('Server is listening!')

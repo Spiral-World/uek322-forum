@@ -74,8 +74,18 @@ export class Post {
       for (let index = 0; index < commentsFromPost.length; index++) {
         const element = commentsFromPost[index]
 
+        let personWhoComented: AUser[] = await this._database.executeSQL(
+          `SELECT name FROM users WHERE id = ${element.userid}`
+        )
+
         if (element.postid == post.id) {
-          newComments.push(element)
+          newComments.push({
+            id: element.id,
+            userid: element.userid,
+            postid: element.postid,
+            text: element.text,
+            author: personWhoComented[0].name
+          })
         }
       }
 
