@@ -1,9 +1,4 @@
-const allPosts = [
-    {"Author": "Beb", "Titel": "Attack on titan", "Text": "Bla bla bla bla bla bla", "Likes": 5, "Dislikes": 10, "Comments": [{"Author":"Mat", "Text":"Bcwqqwcqwcqw"},{"Author":"Jop", "Text":"Sasi hui pidor"}]},
-    {"Author": "Beb", "Titel": "3 world war", "Text": "Bla bla bla bla bla bla", "Likes": 10, "Dislikes": 100, "Comments": {}},
-    {"Author": "Dominic", "Titel": "Python programming", "Text": "Bla bla bla bla bla bla", "Likes": 2, "Dislikes": 0, "Comments": {}}
-];
-
+getWhoAmI(2);
 function showProfile() {
     const userFunctions = document.getElementById("userFunctions");
     const userProfile = document.getElementById("userProfile");
@@ -20,7 +15,7 @@ function showProfile() {
     //Text
     name.innerHTML = "Username: " + "<strong>" + localStorage.getItem("username") + "</strong>";
     changeData.innerText = "Change username or password";
-    allPostsLabel.innerText = "All your posts:";
+    allPostsLabel.innerText = "All posts:";
     //Styles
     header.className = "border-b-2";
     backArrow.className = "bg-[url('../materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
@@ -42,29 +37,10 @@ function showProfile() {
     userProfile.appendChild(header);
     userProfile.appendChild(name);
     userProfile.appendChild(changeData);
-    allPostsDiv.appendChild(allPostsLabel);
+    allPostsDiv.appendChild(allPostsLabel);undefined
     userProfile.appendChild(allPostsDiv);
     //Information about all user posts
-    for (let i = 0; i < allPosts.length; i++) {
-        if (allPosts[i].Author == localStorage.getItem("username")) {
-            //DOM
-            let post = document.createElement("div");
-            let info = document.createElement("div");
-            //Text
-            let comment;
-            if (allPosts[i].Comments.length !== undefined) {
-                comment = allPosts[i].Comments.length
-            } else {
-                comment = 0;
-            }
-            info.innerText = "Titel: " + allPosts[i].Titel + "\nLikes: " + allPosts[i].Likes + " | Dislikes: " + allPosts[i].Dislikes + "\nComments: " + comment;
-            //Styles 
-            post.className = "text-[1rem] border-2";
-            //Appends
-            post.appendChild(info);
-            userProfile.appendChild(post);
-        }
-    }
+    getWhoAmI(1);
 }
 
 function changeDataWindow() {
@@ -88,7 +64,7 @@ function changeDataWindow() {
                 <label class="absolute left-[0.75rem] top-0 text-[1rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">New password</label>
     </div>
     <div class="relative mb-[1rem] h-[2rem] cursor-pointer">
-                <input id="oldPass" maxlength="30" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2" placeholder="This field is necessarily">
+                <input id="oldPass" maxlength="30" class="w-[100%] h-[100%] text-[1.2rem] m-0 bg-[rgba(0,0,0,0)] mt-[1rem] rounded-[2px] border-2" placeholder="Only for new password">
                 <label class="absolute left-[0.75rem] top-0 text-[1rem] font-normal text-[rgb(112,117,121)] px-[0.25rem] bg-white">Actual password</label>
     </div>
     <div class="text-[1rem] text-center text-red-500">At least one of the values(Username or/and Password) must be changed!</div>
@@ -125,9 +101,29 @@ function changeData() {
     } else if (newPassword.value.length > 0 && newPassword.value.length <=2) {
         customAlert(2, "New password is too short");
     } else {
-        if (newName.value !== "") {
-            localStorage.setItem("username", newName.value)
-        }   
+
+        if (newName.value !== "" && newPassword.value !== "") {
+            const data = {
+                newName: newName.value,
+                newpassword: newPassword.value,
+                oldpassword: actualPassword.value
+            }
+            putName(data);
+            localStorage.setItem("username", newName.value);
+        } else if (newPassword.value == "") {
+            const name = {
+                newName: newName.value
+            }
+            putName(name);
+            localStorage.setItem("username", newName.value);
+        } else if (newName.value == "") {
+            const psw = {
+                newpassword: newPassword.value,
+                oldpassword: actualPassword.value
+            }
+            putPassword(psw);
+        }
+
         changeProfile.style.display = "none";
         userFunctions.style.display = "block";
     }

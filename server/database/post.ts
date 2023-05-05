@@ -1,5 +1,7 @@
 import { Database } from './database'
 
+import { APost, ALike, AComment, AUser } from '../interface/interface'
+
 export class Post {
   private _database: Database
 
@@ -39,41 +41,59 @@ export class Post {
     }
   }
 
-  async getAllPosts(): Promise<object[]> {
-    let arrayOfPosts: object[] = await this._database.executeSQL(
-      `SELECT * FROM posts`
+  async getAllPosts(): Promise<APost[]> {
+    let arrayOfPosts: APost[] = await this._database.executeSQL(
+      `SELECT * FROM posts ORDER BY id DESC`
     )
 
-    let newPostsWithCommentsLikes: object[] = []
+    let newPostsWithCommentsLikes: APost[] = []
 
     for (let i = 0; i < arrayOfPosts.length; i++) {
-      const post: object = arrayOfPosts[i]
+      const post: APost = arrayOfPosts[i]
 
-      let personWhoPosted: object[] = await this._database.executeSQL(
+      let personWhoPosted: AUser[] = await this._database.executeSQL(
         `SELECT name FROM users WHERE id = ${post.userid}`
       )
 
-      let newLikes: object[] = []
-      let likesFromPost: object[] = await this._database.executeSQL(
+      let newLikes: ALike[] = []
+      let likesFromPost: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes`
       )
       for (let index = 0; index < likesFromPost.length; index++) {
         const element = likesFromPost[index]
 
+        let personWhoLiked: AUser[] = await this._database.executeSQL(
+          `SELECT name FROM users WHERE id = ${element.userid}`
+        )
+
         if (element.postid == post.id) {
-          newLikes.push(element)
+          newLikes.push({
+            id: element.id,
+            userid: element.userid,
+            likeit: element.likeit,
+            author: personWhoLiked[0].name
+          })
         }
       }
 
-      let newComments: object[] = []
-      let commentsFromPost: object[] = await this._database.executeSQL(
+      let newComments: AComment[] = []
+      let commentsFromPost: AComment[] = await this._database.executeSQL(
         `SELECT * FROM comments`
       )
       for (let index = 0; index < commentsFromPost.length; index++) {
         const element = commentsFromPost[index]
 
+        let personWhoComented: AUser[] = await this._database.executeSQL(
+          `SELECT name FROM users WHERE id = ${element.userid}`
+        )
+
         if (element.postid == post.id) {
-          newComments.push(element)
+          newComments.push({
+            id: element.id,
+            userid: element.userid,
+            text: element.text,
+            author: personWhoComented[0].name
+          })
         }
       }
 
@@ -91,20 +111,20 @@ export class Post {
     return newPostsWithCommentsLikes
   }
 
-  async getOnePersonsPosts(userId: string): Promise<object[] | boolean> {
+  async getOnePersonsPosts(userId: string): Promise<APost[] | boolean> {
     const PERSONS_POSTS = await this._database.executeSQL(
       `SELECT * FROM posts WHERE userid = ${this._database.preventSQLInjection(
         userId
       )}`
     )
 
-    let personsPostsWithCommentsLikes: object[] = []
+    let personsPostsWithCommentsLikes: APost[] = []
 
     for (let i = 0; i < PERSONS_POSTS.length; i++) {
-      const post: object = PERSONS_POSTS[i]
+      const post: APost = PERSONS_POSTS[i]
 
-      let newLikes: object[] = []
-      let likesFromPost: object[] = await this._database.executeSQL(
+      let newLikes: ALike[] = []
+      let likesFromPost: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes`
       )
       for (let index = 0; index < likesFromPost.length; index++) {
@@ -115,8 +135,8 @@ export class Post {
         }
       }
 
-      let newComments: object[] = []
-      let commentsFromPost: object[] = await this._database.executeSQL(
+      let newComments: AComment[] = []
+      let commentsFromPost: AComment[] = await this._database.executeSQL(
         `SELECT * FROM comments`
       )
       for (let index = 0; index < commentsFromPost.length; index++) {
@@ -129,7 +149,7 @@ export class Post {
 
       personsPostsWithCommentsLikes.push({
         id: post.id,
-        title: post.title,
+        titel: post.title,
         content: post.content,
         comments: newComments,
         likes: newLikes,
@@ -174,7 +194,15 @@ export class Post {
     likeing: boolean
   ): Promise<boolean> {
     try {
-      let doesItExist: object[] = await this._database.executeSQL(
+      let doesThePostExist: APost[] = await this._database.executeSQL(
+        `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+          postId
+        )}`
+      )
+      if (doesThePostExist.length <= 0) {
+        return false
+      }
+      let doesItExist: ALike[] = await this._database.executeSQL(
         `SELECT * FROM likes WHERE userid = ${this._database.preventSQLInjection(
           userID
         )} AND postid = ${this._database.preventSQLInjection(postId)}`
@@ -212,15 +240,23 @@ export class Post {
   async commentOnAPost(
     userID: string,
     postId: string,
-    test: string
+    text: string
   ): Promise<boolean> {
+    let doesThePostExist: APost[] = await this._database.executeSQL(
+      `SELECT * FROM posts WHERE id = ${this._database.preventSQLInjection(
+        postId
+      )}`
+    )
+    if (doesThePostExist.length <= 0) {
+      return false
+    }
     if (
       await this._database
         .executeSQL(`INSERT INTO comments (id, userid, postid, text) VALUES (
             NULL,
             ${this._database.preventSQLInjection(userID)},
             ${this._database.preventSQLInjection(postId)},
-            '${this._database.preventSQLInjection(test)}'
+            '${this._database.preventSQLInjection(text)}'
         );`)
     ) {
       return true
@@ -241,12 +277,16 @@ export class Post {
     return false
   }
 
+  async getAllComments(): Promise<AComment[]> {
+    return await this._database.executeSQL(`SELECT * FROM comments`)
+  }
+
   async changeAComment(id: string, text: string): Promise<boolean> {
     if (
       await this._database.executeSQL(
-        `UPDATE comments SET text = ${this._database.preventSQLInjection(
+        `UPDATE comments SET text = '${this._database.preventSQLInjection(
           text
-        )}} WHERE id = ${this._database.preventSQLInjection(id)}`
+        )}' WHERE id = ${this._database.preventSQLInjection(id)}`
       )
     ) {
       return true

@@ -1,12 +1,11 @@
 import express, { Express, Request, Response } from 'express'
-// { WebSocketServer } from './websocketserverdirectory'
 import { API } from './api'
 import http from 'http'
 import { resolve, dirname } from 'path'
 import { Database, User, Post } from './database'
 
 // Middleware used to get the request body
-import * as bodyParser from 'body-parser'
+import bodyParser from 'body-parser'
 
 // Middleware used for the session token
 import cookieParser from 'cookie-parser'
@@ -14,9 +13,7 @@ import cookieParser from 'cookie-parser'
 class Backend {
   // Properties
   private _app: Express
-  //private _WebSocketServer: WebSocketServer
   private _database: Database
-  private _env: string
   private _server: http.Server
   private _API: API
 
@@ -31,11 +28,7 @@ class Backend {
   public get server(): http.Server {
     return this._server
   }
-  /*
-  public get webSocketServer(): WebSocketServer {
-    return this._WebSocketServer
-  }
-*/
+
   public get API(): API {
     return this._API
   }
@@ -55,10 +48,20 @@ class Backend {
   // Constructor
   constructor() {
     this._app = express()
+
     // support parsing of application/json type post data
     this._app.use(bodyParser.json())
     //support parsing of application/x-www-form-urlencoded post data
     this._app.use(bodyParser.urlencoded({ extended: true }))
+
+    /*
+    this._app.use(function (req, res) {
+      //res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+      //res.setHeader('X-Content-Type-Options', 'none')
+
+      //res.end(JSON.stringify(req.body, null, 2))
+    })
+    */
 
     this._app.use(cookieParser())
 
@@ -68,9 +71,7 @@ class Backend {
     this._user = new User(this._database)
     this._post = new Post(this._database)
 
-    //this._WebSocketServer = new WebSocketServer(this._server)
     this._API = new API(this._app, this._user, this._post)
-    this._env = process.env.NODE_ENV || 'development'
 
     this.setupStaticFiles()
     this.setupRoutes()
@@ -85,18 +86,27 @@ class Backend {
   private setupRoutes(): void {
     this._app.get('/', (req: Request, res: Response) => {
       const __dirname = resolve(dirname(''))
-      res.sendFile(__dirname + '/client/index.html')
+      res.sendFile(__dirname + '/client/HTML/index.html')
     })
   }
 
+  /*
+  private downloader(): void {
+    this._app.get('/Download', (req: Request, res: Response) => {
+      res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+      const __dirname = resolve(dirname(''))
+      res.sendFile(__dirname + '/client/HTML/index.html')
+    })
+  }
+  */
+
   private startServer(): void {
-    if (this._env === 'production') {
-      this._server.listen(3000, () => {
-        console.log('Server is listening!')
-      })
-    }
+    this._server.listen(4200, () => {
+      console.log('Server is listening!')
+    })
   }
 }
 
 const backend = new Backend()
 export const viteNodeApp = backend.app
+

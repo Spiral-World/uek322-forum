@@ -60,19 +60,21 @@ INSERT INTO users (id, name, passwdhash, role, ban) VALUES (NULL, "User", "$2b$1
 `
 
 const CHECK_IF_USER_EXISTS = async (
-    sql: Function,
-    name: string
-  ): Promise<boolean> => {
-    try {
-      const arrayOfRoles = await sql(`SELECT * FROM users WHERE name = '${name}'`)
-      if (arrayOfRoles.length <= 0) {
-        return true
-      }
-      return false
-    } catch (e) {
-      return false
+  sql: Function,
+  name: string
+): Promise<boolean> => {
+  try {
+    const arrayOfRoles = await sql(
+      `SELECT * FROM users WHERE name = '${name}' OR role = '${name}'`
+    )
+    if (arrayOfRoles.length <= 0) {
+      return true
     }
+    return false
+  } catch (e) {
+    return false
   }
+}
 
 const POSTS_TABLE = `
 CREATE TABLE IF NOT EXISTS posts (
@@ -127,5 +129,5 @@ export {
   CREATE_DEFAULT_ADMIN,
   CREATE_DEFAULT_MODERATOR,
   CREATE_DEFAULT_USER,
-  CHECK_IF_USER_EXISTS
+  CHECK_IF_USER_EXISTS,
 }

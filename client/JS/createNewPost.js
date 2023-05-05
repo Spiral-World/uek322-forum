@@ -47,12 +47,17 @@ function createNewPost() {
     } else if (postText.value == "") {
         customAlert(2, "Please provide some text");
     } else {
-        addPost(postTitel.value, postText.value, localStorage.getItem("username"), String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16)), 5, 10);
+        const postInfo = {
+            titel: postTitel.value,
+            content: postText.value
+        }
+        postPost(postInfo);
+        //addPost(postTitel.value, postText.value, localStorage.getItem("username"), 0, 0);
         backArrow.click();
     }
 }
 
-function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
+function addPost(titel, text, author, likesDislikes, comments = 0, postId = 0, role = 0) {
     //Create DOM elements 
     const postsWindow = document.getElementById("postsWindow");
     const postWindow = document.createElement("div");
@@ -60,7 +65,6 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const postBody = document.createElement("div");
     const postFooter = document.createElement("div");
     const postAuthor = document.createElement("div");
-    const postTime = document.createElement("div");
     const postTitel = document.createElement("div");
     const postText = document.createElement("div");
     const postScore = document.createElement("div");
@@ -78,17 +82,27 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     const commentFooter =document.createElement("div");
     const commentInput = document.createElement("input");
     const commentSend = document.createElement("button");
+    //Variables
+    let likes = 0;
+    let dislikes = 0;
     //Text
-    postTime.innerText = time;
     postAuthor.innerText = author;
     postTitel.innerText = titel;
     postText.innerText = text;
+    for (let i = 0; i < likesDislikes.length; i++) {
+        if (likesDislikes[i].likeit == 1) {
+            likes++;
+        } else {
+            dislikes++;
+        }
+    }
     postLikes.innerText = likes;
     postDislikes.innerText = dislikes;
-    if (comments.length !== undefined) {
-        postComments.innerText = comments.length;
-    } else {
+    console.log(likesDislikes);
+    if (comments.length === undefined) {
         postComments.innerText = 0;
+    } else {
+        postComments.innerText = comments.length;
     }
     commentInput.placeholder = "Comment text";
     //Styles
@@ -100,7 +114,6 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postDislikes.className = "text-[1rem]";
     postComments.className = "text-[1rem] mt-[0.2rem] ml-[0.1rem]";
     postAuthor.className = "ml-6 text-[1.2rem]";
-    postTime.className = "mr-6 ml-auto";
     postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2";
     postText.className = "ml-6 break-words mb-2";
     postScore.className = "rounded-full border-2 flex flex-row py-1 px-1";
@@ -115,6 +128,14 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     commentFooter.className = "w-[100%] flex flex-row justify-center my-2 border-t-2";
     commentSend.className = "bg-[url('../materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
     commentInput.className = "ml-auto mr-4 mt-2 border-2 rounded-[4px] w-[70%]";
+    //Like/Dislike styling
+    for (let i = 0; i < likesDislikes.length; i++) {
+        if (likesDislikes[i].author == localStorage.getItem("username") && likesDislikes[i].likeit == 1) {
+            postScore.className += " bg-[rgba(80,250,100,0.4)]";
+        } else if (likesDislikes[i].author == localStorage.getItem("username") && likesDislikes[i].likeit == 0) {
+            postScore.className += " bg-[rgba(250,20,50,0.4)]";
+        }
+    }
     //Functions
     postCommentsIcon.addEventListener("click", function() {
         if (commentWindow.style.display == "block") {
@@ -124,14 +145,26 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
         }
     });
     commentSend.addEventListener("click", function() {
-        createComment("Beb", commentInput.value, commentBody);
+        const data = {
+            postid: postId,
+            text: commentInput.value
+        }
+        postComment(data);
         commentInput.value = "";
     });
     postDelete.addEventListener("click", function() {
+        const id = {postid: postId};
+        deletePost(id);
         postWindow.remove();
     });
     postEdit.addEventListener("click", function() {
         if (postText.contentEditable == "true") {
+            const data = {
+                postid: postId,
+                titel: postTitel.innerText,
+                content: postText.innerText
+            };
+            putPost(data);
             postText.contentEditable = "false";
             postTitel.contentEditable = "false";
             postText.className = "ml-6 break-words mb-2";
@@ -143,6 +176,20 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
             postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2 bg-[rgba(252,39,128,0.4)]";
         }  
     });
+    postLikeIcon.addEventListener("click", function() {
+        const data = {
+            postid: postId,
+            like: true
+        };
+        postLikeDislike(data);
+    });
+    postDislikeIcon.addEventListener("click", function() {
+        const data = {
+            postid: postId,
+            like: false
+        };
+        postLikeDislike(data);        
+    });
     //Appends
     postScore.appendChild(postLikeIcon);
     postScore.appendChild(postLikes);
@@ -151,12 +198,18 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     postFooter.appendChild(postScore);
     postFooter.appendChild(postCommentsIcon);
     postFooter.appendChild(postComments);
-    postFooter.appendChild(postDelete);
-    postFooter.appendChild(postEdit);
+    if (role.role == "User") {
+        if (postAuthor.innerText == localStorage.getItem("username")) {
+            postFooter.appendChild(postDelete);
+            postFooter.appendChild(postEdit);
+        }  
+    } else {
+        postFooter.appendChild(postDelete);
+        postFooter.appendChild(postEdit);
+    }
     postBody.appendChild(postTitel);
     postBody.appendChild(postText);
     postHeader.appendChild(postAuthor);
-    postHeader.appendChild(postTime);
     postWindow.appendChild(postHeader);
     postWindow.appendChild(postBody);
     postWindow.appendChild(postFooter);
@@ -170,12 +223,12 @@ function addPost(titel, text, author, time, likes, dislikes, comments = 0) {
     //Add comments on auto creation
     if (comments != 0) {
         for (let i = 0; i < comments.length; i++) {
-            createComment(comments[i].Author, comments[i].Text, commentBody);
+            createComment(comments[i].author, comments[i].text, commentBody, comments[i].id, role.role);
         }
     }
 }
 
-function createComment(author, text, commentField) {
+function createComment(author, text, commentField, commId = 0, role) {
     //Dom elements
     const commentDiv = document.createElement("div");
     const commentHeader = document.createElement("div");
@@ -194,12 +247,21 @@ function createComment(author, text, commentField) {
     commentEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     //Functions 
     commentDelete.addEventListener("click", function() {
+        const id = {
+            commentid: commId
+        }
+        deleteComment(id);
         commentDiv.remove();
     });
     commentEdit.addEventListener("click", function() {
         if (commentText.contentEditable == "true") {
             commentText.contentEditable = "false";
             commentText.className = "break-words";
+            const data = {
+                commentid: commId,
+                text: commentText.innerText
+            };
+            putComment(data);
         } else {
             commentText.contentEditable = "true";
             commentText.className = "break-words bg-[rgba(252,39,128,0.4)]"
@@ -207,14 +269,17 @@ function createComment(author, text, commentField) {
     });
     //Appends
     commentHeader.appendChild(commentAuthor);
-    commentHeader.appendChild(commentDelete);
-    commentHeader.appendChild(commentEdit);
+    if (role == "User") {
+        if (commentAuthor.innerText == localStorage.getItem("username")) {
+            commentHeader.appendChild(commentDelete);
+            commentHeader.appendChild(commentEdit);
+        }  
+    } else {
+        commentHeader.appendChild(commentDelete);
+        commentHeader.appendChild(commentEdit);
+    }
     commentDiv.appendChild(commentHeader);
     commentDiv.appendChild(commentText);
     commentField.appendChild(commentDiv);
 }
 
-for (let i = 0; i < allPosts.length; i++) {
-    testTime = String(new Date((parseInt(new Date().toJSON().slice(11, 13)) * 3600 + parseInt(new Date().toJSON().slice(14, 16)) * 60 + 3600) * 1000).toJSON().slice(11, 16));
-    addPost(allPosts[i].Titel,allPosts[i].Text,allPosts[i].Author, testTime, allPosts[i].Likes, allPosts[i].Dislikes, allPosts[i].Comments);
-}
