@@ -48,10 +48,20 @@ class Backend {
   // Constructor
   constructor() {
     this._app = express()
+
     // support parsing of application/json type post data
     this._app.use(bodyParser.json())
     //support parsing of application/x-www-form-urlencoded post data
     this._app.use(bodyParser.urlencoded({ extended: true }))
+
+    /*
+    this._app.use(function (req, res) {
+      //res.setHeader('Content-Type', 'application/json')
+      res.setHeader('X-Content-Type-Options', 'none')
+
+      //res.end(JSON.stringify(req.body, null, 2))
+    })
+    */
 
     this._app.use(cookieParser())
 
@@ -79,7 +89,7 @@ class Backend {
       res.sendFile(__dirname + '/client/HTML/index.html')
     })
   }
-  
+
   private startServer(): void {
     this._server.listen(4200, () => {
       console.log('Server is listening!')
@@ -89,3 +99,4 @@ class Backend {
 
 const backend = new Backend()
 export const viteNodeApp = backend.app
+

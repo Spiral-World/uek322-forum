@@ -14,15 +14,17 @@ export interface APost {
 }
 
 export interface AComment {
-    id: number
-    userid: number
-    postid: number
-    text: number
+    id?: number
+    userid?: number
+    postid?: number
+    text?: number
+    author?: string
 }
 
 export interface ALike {
-    id: number
-    userid: number
-    postid: number
-    likeit: boolean
+    id?: number
+    userid?: number
+    postid?: number
+    likeit?: boolean
+    author?: string
 }

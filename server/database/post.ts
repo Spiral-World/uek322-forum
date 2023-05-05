@@ -62,8 +62,17 @@ export class Post {
       for (let index = 0; index < likesFromPost.length; index++) {
         const element = likesFromPost[index]
 
+        let personWhoLiked: AUser[] = await this._database.executeSQL(
+          `SELECT name FROM users WHERE id = ${element.userid}`
+        )
+
         if (element.postid == post.id) {
-          newLikes.push(element)
+          newLikes.push({
+            id: element.id,
+            userid: element.userid,
+            likeit: element.likeit,
+            author: personWhoLiked[0].name
+          })
         }
       }
 
@@ -82,7 +91,6 @@ export class Post {
           newComments.push({
             id: element.id,
             userid: element.userid,
-            postid: element.postid,
             text: element.text,
             author: personWhoComented[0].name
           })
