@@ -24,7 +24,7 @@ function createPostWindow() {
     `;
     //Styles
     header.className = "border-b-2";
-    backArrow.className = "bg-[url('../materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
+    backArrow.className = "bg-[url('../Materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
     //Functions
         //Return
         backArrow.addEventListener("click", function() {
@@ -117,16 +117,16 @@ function addPost(titel, text, author, likesDislikes, comments = 0, postId = 0, r
     postTitel.className = "ml-6 text-[1.4rem] mb-2 border-b-2";
     postText.className = "ml-6 break-words mb-2";
     postScore.className = "rounded-full border-2 flex flex-row py-1 px-1";
-    postLikeIcon.className = "bg-[url('../materials/like.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(80,250,100,0.4)] rounded";
-    postDislikeIcon.className = "bg-[url('../materials/dislike.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
-    postCommentsIcon.className = "bg-[url('../materials/comment.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[0.2rem] mt-[0.3rem] cursor-pointer hover:bg-gray-300 rounded";
-    postDelete.className = "bg-[url('../materials/delete.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-auto mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
-    postEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[1.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(245,255,90,0.4)] rounded";
+    postLikeIcon.className = "bg-[url('../Materials/like.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(80,250,100,0.4)] rounded";
+    postDislikeIcon.className = "bg-[url('../Materials/dislike.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.3rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
+    postCommentsIcon.className = "bg-[url('../Materials/comment.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[0.2rem] mt-[0.3rem] cursor-pointer hover:bg-gray-300 rounded";
+    postDelete.className = "bg-[url('../Materials/delete.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-auto mt-[0.2rem] cursor-pointer hover:bg-[rgba(250,20,50,0.4)] rounded";
+    postEdit.className = "bg-[url('../Materials/editing.png')] bg-cover w-[1.4rem] h-[1.4rem] ml-[1rem] mr-[1.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(245,255,90,0.4)] rounded";
     //Hide styles
     commentWindow.className = "hidden border-t-4 flex flex-column justify-center";
     commentBody.className = "w-[95%] max-h-[10rem] overflow-y-auto";
     commentFooter.className = "w-[100%] flex flex-row justify-center my-2 border-t-2";
-    commentSend.className = "bg-[url('../materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
+    commentSend.className = "bg-[url('../Materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
     commentInput.className = "ml-auto mr-4 mt-2 border-2 rounded-[4px] w-[70%]";
     //Like/Dislike styling
     for (let i = 0; i < likesDislikes.length; i++) {
@@ -243,8 +243,8 @@ function createComment(author, text, commentField, commId = 0, role) {
     commentDiv.className = "ml-6 border-t-2 border-b-2 my-2";
     commentHeader.className = "flex flex-row";
     commentText.className = "break-words";
-    commentDelete.className = "bg-[url('../materials/delete.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
-    commentEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    commentDelete.className = "bg-[url('../Materials/delete.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
+    commentEdit.className = "bg-[url('../Materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     //Functions 
     commentDelete.addEventListener("click", function() {
         const id = {

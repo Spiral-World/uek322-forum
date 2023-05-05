@@ -203,8 +203,8 @@ function requestGet(event, whoI = 0, add = 0) {
              name.className = "max-w-[5rem]";
              info.className = "flex flex-col";
              userDiv.className = "text-[1rem] border-2 my-[0.3rem] relative flex flex-row";
-             block.className = "bg-[url('../materials/blockUser.png')] mt-[0.3rem] mx-[0.5rem] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] rounded";
-             change.className = "bg-[url('../materials/editing.png')] mt-[0.3rem] ml-auto bg-cover w-[2rem] h-[2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] rounded";
+             block.className = "bg-[url('../Materials/blockUser.png')] mt-[0.3rem] mx-[0.5rem] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] rounded";
+             change.className = "bg-[url('../Materials/editing.png')] mt-[0.3rem] ml-auto bg-cover w-[2rem] h-[2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] rounded";
              role.className = "w-[5rem]";
              //Functions
              change.addEventListener("click", function() {
