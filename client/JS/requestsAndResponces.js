@@ -99,6 +99,7 @@ function requestGet(event, whoI = 0, add = 0) {
 
     let path = event.currentTarget.responseURL;
     if (whoI == 2) {
+        document.getElementById("yourName").innerText = JSON.parse(request.responseText).role;
         if (JSON.parse(request.responseText).role == "Admin") {
             document.getElementById("adminZone").style.display = "block";
         }
