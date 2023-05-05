@@ -1,0 +1,11 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+.listButton {
+ cursor: pointer;
+ font-size: 1.5rem;
+ border-radius: 0.25rem;
+}
+.listButton:hover {
+  background-color: rgba(252,39,128, 0.2);
+ }
