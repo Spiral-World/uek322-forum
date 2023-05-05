@@ -114,18 +114,22 @@ function requestGet(event, whoI = 0, add = 0) {
                 let info = document.createElement("div");
                 //Text
                 let comment;
-                let like;
+                let likes = 0;
+                let dislikes = 0;
                 if (allPosts[i].comments.length !== undefined) {
                     comment = allPosts[i].comments.length
                 } else {
                     comment = 0;
                 }
-                if (allPosts[i].likes.length !== undefined) {
-                    like =allPosts[i].likes.length;
-                } else {
-                    like = 0;
+                for (let j = 0; j < allPosts[i].likes.length; j++) {
+                    if (allPosts[i].likes[j].likeit == 1) {
+                        likes++;
+                    } else {
+                        dislikes++;
+                    }
                 }
-                info.innerText = "Author: " + allPosts[i].author + "\nTitle: " + allPosts[i].title + "\nLikes: " + like + " | Dislikes: " + like     + "\nComments: " + comment;
+                
+                info.innerText = "Author: " + allPosts[i].author + "\nTitle: " + allPosts[i].title + "\nLikes: " + likes + " | Dislikes: " + dislikes + "\nComments: " + comment;
                 //Styles 
                 post.className = "text-[1rem] border-2";
                 //Appends
@@ -229,7 +233,9 @@ function requestGet(event, whoI = 0, add = 0) {
              info.appendChild(ban);
              userDiv.appendChild(info);
              userDiv.appendChild(change);
-             userDiv.appendChild(block);
+             if (allUsers[i].role !== "Admin") {
+                userDiv.appendChild(block);
+             }
              blockUserWindow.appendChild(userDiv);
         }
     }
@@ -344,6 +350,6 @@ function requestPost(event) {
     } else if (path.includes("api/Comment")) {
         getWhoAmI(2);
     } else if (path.includes("api/Like")) {
-        console.log(request.responseText);
+        getWhoAmI(2);
     }
 }

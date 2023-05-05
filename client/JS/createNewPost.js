@@ -128,6 +128,14 @@ function addPost(titel, text, author, likesDislikes, comments = 0, postId = 0, r
     commentFooter.className = "w-[100%] flex flex-row justify-center my-2 border-t-2";
     commentSend.className = "bg-[url('../materials/send.png')] bg-cover w-[1.2rem] h-[1.2rem] mx-[0.5rem] mt-[0.8rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)] mr-8";
     commentInput.className = "ml-auto mr-4 mt-2 border-2 rounded-[4px] w-[70%]";
+    //Like/Dislike styling
+    for (let i = 0; i < likesDislikes.length; i++) {
+        if (likesDislikes[i].author == localStorage.getItem("username") && likesDislikes[i].likeit == 1) {
+            postScore.className += " bg-[rgba(80,250,100,0.4)]";
+        } else if (likesDislikes[i].author == localStorage.getItem("username") && likesDislikes[i].likeit == 0) {
+            postScore.className += " bg-[rgba(250,20,50,0.4)]";
+        }
+    }
     //Functions
     postCommentsIcon.addEventListener("click", function() {
         if (commentWindow.style.display == "block") {
