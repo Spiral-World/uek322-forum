@@ -173,7 +173,6 @@ export class API {
   private async register(req: Request, res: Response) {
     try {
       const data: any = req.body
-      console.log(req.body);
       if (!data.name) {
         res.status(406).json({
           error: 'Invalid name',
@@ -186,6 +185,8 @@ export class API {
         })
         return
       }
+
+      console.log(`new user: ${data.name}`)
 
       const hashPWD: string = await this.hashPassword(String(data.password))
 
@@ -254,6 +255,7 @@ export class API {
     }
 
     this.post.createPost(String(data.titel), String(data.content), String(user.id))
+    console.log(`user: ${user.name}, created a post`)
 
     res.status(201).json({
       info: 'Created a Post',
@@ -281,6 +283,7 @@ export class API {
 
         if (data.postid == element.id) {
           await this.post.deletePost(String(element.id))
+          console.log(`user: ${user.name}, deleted a post: ${data.postid}`)
           res.status(200).json({
             info: 'deleted post: ' + element.id,
           })
@@ -295,6 +298,7 @@ export class API {
     user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
     if (user !== false) {
       await this.post.deletePost(String(data.postid))
+      console.log(`user: ${user.name}, deleted a post: ${data.postid}`)
       res.status(200).json({
         info:
           'deleted post, This Post Could Also Not Exist',
@@ -343,6 +347,7 @@ export class API {
             String(data.titel),
             String(data.content)
           )
+          console.log(`user: ${user.name}, changed a post: ${data.postid}`)
           res.status(200).json({
             info: 'changed post: ' + element.id,
           })
@@ -361,6 +366,7 @@ export class API {
         String(data.titel),
         String(data.content)
       )) {
+        console.log(`user: ${user.name}, changed a post: ${data.postid}`)
         res.status(200).json({
           info:
             'changed post',
@@ -437,6 +443,7 @@ export class API {
       }
 
       await this.user.deleteUserbyName(String(data.username))
+      console.log(`user: ${user.name}, deleted user: ${data.username}`)
       res.status(200).json({
         info: 'Deleted a User: ' + data.username,
       })
@@ -478,6 +485,7 @@ export class API {
         await this.hashPassword(String(data.newpassword))
       )
     ) {
+      console.log(`user: ${user.name}, changed his password`)
       res.status(200).json({
         info: 'Password Changed',
       })
@@ -509,6 +517,7 @@ export class API {
     }
 
     if (await this.user.changeUserName(String(data.newName), user.name)) {
+      console.log(`user: ${user.name}, changed name to: ${data.newName}`)
       res.status(200).json({
         info: 'Name has been changed',
       })
@@ -552,6 +561,7 @@ export class API {
       String(data.postid),
       data.like
     )) {
+      console.log(`user: ${user.name}, liked: ${data.like}, post: ${data.postid}`)
       res.status(200).json({
         info: 'Success',
       })
@@ -595,6 +605,7 @@ export class API {
         String(data.text)
       )
     ) {
+      console.log(`user: ${user.name}, made a comment on: ${data.postid}`)
       res.status(200).json({
         info: 'commented',
       })
@@ -632,6 +643,7 @@ export class API {
         
         if (element.userid == user.id) {
           await this.post.changeAComment(String(data.commentid), String(data.text))
+          console.log(`comment: ${data.commentid}, got changed by ${user.name}`)
           res.status(200).json({
             info: 'changed the comment',
           })
@@ -647,6 +659,7 @@ export class API {
     user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
     if (user !== false) {
       if (await this.post.changeAComment(String(data.commentid), String(data.text))) {
+        console.log(`comment: ${data.commentid}, got changed by ${user.name}`)
         res.status(200).json({
           info: 'comment Changed',
         })
@@ -678,6 +691,7 @@ export class API {
         
         if (element.userid == user.id) {
           await this.post.deleteAComment(String(data.commentid))
+          console.log(`comment: ${data.commentid}, got deleted by: ${user.name}`)
           res.status(200).json({
             info: 'deleted the comment',
           })
@@ -693,6 +707,7 @@ export class API {
     user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
     if (user !== false) {
       if (await this.post.deleteAComment(String(data.commentid))) {
+        console.log(`comment: ${data.commentid}, got deleted by: ${user.name}`)
         res.status(200).json({
           info: 'comment deleted',
         })
@@ -717,7 +732,7 @@ export class API {
     }
 
     const data: any = req.body
-    console.log(data);
+
     if (!data.userid) {
       res.status(406).json({
         error: 'Invalid userid',
@@ -733,6 +748,7 @@ export class API {
     }
 
     if (await this.user.banOrUnbanUser(String(data.userid), data.ban)) {
+      console.log(`user: ${data.userid}, got banned: ${data.ban}`)
       res.status(200).json({
         info: 'Un/Banned User',
       })
@@ -773,6 +789,7 @@ export class API {
     }
 
     if (await this.user.changeUserRoll(String(data.name), String(data.role))) {
+      console.log(`Admin changed role of: ${data.name}, to ${data.role}`)
       res.status(200).json({
         info: 'Changed role',
       })
