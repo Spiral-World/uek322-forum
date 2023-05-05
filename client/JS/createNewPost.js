@@ -57,7 +57,7 @@ function createNewPost() {
     }
 }
 
-function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0, role = 0) {
+function addPost(titel, text, author, likesDislikes, comments = 0, postId = 0, role = 0) {
     //Create DOM elements 
     const postsWindow = document.getElementById("postsWindow");
     const postWindow = document.createElement("div");
@@ -82,20 +82,23 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
     const commentFooter =document.createElement("div");
     const commentInput = document.createElement("input");
     const commentSend = document.createElement("button");
+    //Variables
+    let likes = 0;
+    let dislikes = 0;
     //Text
     postAuthor.innerText = author;
     postTitel.innerText = titel;
     postText.innerText = text;
-    if (likes.length === undefined) {
-        postLikes.innerText = 0;
-    } else {
-        postLikes.innerText = likes.length;
+    for (let i = 0; i < likesDislikes.length; i++) {
+        if (likesDislikes[i].likeit == 1) {
+            likes++;
+        } else {
+            dislikes++;
+        }
     }
-    if (dislikes.length === undefined) {
-        postDislikes.innerText = 0;
-    } else {
-        postDislikes.innerText = dislikes.length;
-    }
+    postLikes.innerText = likes;
+    postDislikes.innerText = dislikes;
+    console.log(likesDislikes);
     if (comments.length === undefined) {
         postComments.innerText = 0;
     } else {
@@ -166,10 +169,18 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
         }  
     });
     postLikeIcon.addEventListener("click", function() {
-        
+        const data = {
+            postid: postId,
+            like: true
+        };
+        postLikeDislike(data);
     });
     postDislikeIcon.addEventListener("click", function() {
-        
+        const data = {
+            postid: postId,
+            like: false
+        };
+        postLikeDislike(data);        
     });
     //Appends
     postScore.appendChild(postLikeIcon);

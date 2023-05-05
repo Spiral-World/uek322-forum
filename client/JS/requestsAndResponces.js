@@ -138,7 +138,7 @@ function requestGet(event, whoI = 0, add = 0) {
         const postsWindow = document.getElementById("postsWindow");
         postsWindow.innerHTML = "";
         for (let i = allPosts.length-1; i >= 0; i--) {
-            addPost(allPosts[i].title, allPosts[i].content, allPosts[i].author, allPosts[i].likes, allPosts[i].likes, allPosts[i].comments, allPosts[i].id, JSON.parse(add));
+            addPost(allPosts[i].title, allPosts[i].content, allPosts[i].author, allPosts[i].likes, allPosts[i].comments, allPosts[i].id, JSON.parse(add));
         }
     } else if (path.includes("api/AllUsers")) {
         const allUsers = JSON.parse(request.responseText);
@@ -292,11 +292,12 @@ function postComment(data) {
     request.onreadystatechange = requestPost;
     request.send(JSON.stringify(data));
 }
-function postLikeDislike() {
+function postLikeDislike(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Like");
     request.onreadystatechange = requestPost;
-    request.send();
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify(data));
 }
 function postBanUser(id) {
     request = new XMLHttpRequest();
@@ -342,5 +343,7 @@ function requestPost(event) {
         document.getElementById("goBack").click();
     } else if (path.includes("api/Comment")) {
         getWhoAmI(2);
+    } else if (path.includes("api/Like")) {
+        console.log(request.responseText);
     }
 }
