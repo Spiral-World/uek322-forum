@@ -609,7 +609,7 @@ export class API {
   private async changeComment(req: Request, res: Response) {
     const data: any = req.body
 
-    if (!data.postid) {
+    if (!data.commentid) {
       res.status(406).json({
         error: 'Invalid comment id',
       })
@@ -631,7 +631,7 @@ export class API {
         const element = ALL_COMMENTS[i];
         
         if (element.userid == user.id) {
-          await this.post.changeAComment(String(data.postid), String(data.text))
+          await this.post.changeAComment(String(data.commentid), String(data.text))
           res.status(200).json({
             info: 'changed the comment',
           })
@@ -646,7 +646,7 @@ export class API {
     }
     user = await this.validateUser(req.cookies.token, ['Admin', 'Moderator'])
     if (user !== false) {
-      if (await this.post.changeAComment(String(data.postid), String(data.text))) {
+      if (await this.post.changeAComment(String(data.commentid), String(data.text))) {
         res.status(200).json({
           info: 'comment Changed',
         })

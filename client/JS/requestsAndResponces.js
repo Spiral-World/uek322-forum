@@ -2,7 +2,6 @@ let request;
 //PUT
 function putUserRole(data) {
     request = new XMLHttpRequest();
-    console.log(data);
     request.open("PUT", "http://localhost:4200/api/UserRole");
     request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPut;
@@ -11,17 +10,54 @@ function putUserRole(data) {
 
 function putPost(data) {
     request = new XMLHttpRequest();
-    console.log(data);
     request.open("PUT", "http://localhost:4200/api/Post");
     request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPut;
     request.send(JSON.stringify(data));
 }
+function putComment(data) {
+    request = new XMLHttpRequest();
+    request.open("PUT", "http://localhost:4200/api/Comment");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = requestPut;
+    request.send(JSON.stringify(data));
+}
 
-function requestPut() {
+function putName(name) {
+    request = new XMLHttpRequest();
+    request.open("PUT", "http://localhost:4200/api/UserName");
+    request.setRequestHeader("Content-Type", "application/json");
+    if (name.newpassword === undefined) {
+        request.onreadystatechange = requestPut;
+    } else {
+        request.onreadystatechange = function() {
+            requestPut(event, 1, name);
+        }
+    }
+    
+    request.send(JSON.stringify(name));
+}
+
+function putPassword(psw) {
+    request = new XMLHttpRequest();
+    request.open("PUT", "http://localhost:4200/api/UserPWD");
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onreadystatechange = requestPut;
+    request.send(JSON.stringify(psw));
+}
+
+function requestPut(event, changeType = 0, psw = 0) {
     if (request.readyState < 4) {
         return;
     } 
+    let path = event.currentTarget.responseURL;
+    if (path.includes("api/UserPWD")) {
+        if (request.responseText.includes("error")) {
+            customAlert(1, "False actual(old) password");
+        }
+    } else if (changeType == 1) {
+        putPassword(psw);
+    }
     console.log(request.responseText);
 }
 //GET
@@ -99,7 +135,8 @@ function requestGet(event, whoI = 0, add = 0) {
         }
     } else if (path.includes("api/AllPosts") && whoI == 3) {
         const allPosts = JSON.parse(request.responseText);
-        console.log(add);
+        const postsWindow = document.getElementById("postsWindow");
+        postsWindow.innerHTML = "";
         for (let i = allPosts.length-1; i >= 0; i--) {
             addPost(allPosts[i].title, allPosts[i].content, allPosts[i].author, allPosts[i].likes, allPosts[i].likes, allPosts[i].comments, allPosts[i].id, JSON.parse(add));
         }
@@ -205,18 +242,18 @@ function deletePost(postId) {
     request.onreadystatechange = requestDelete;
     request.send(JSON.stringify(postId));
 }
-function deleteComment() {
+function deleteComment(commId) {
     request = new XMLHttpRequest();
     request.open("DELETE", "http://localhost:4200/api/Comment");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestDelete;
-    request.send();
+    request.send(JSON.stringify(commId));
 }
 
 function requestDelete() {
     if (request.readyState < 4) {
         return;
     } 
-    console.log(request.responseText);
 }
 
 //POST
@@ -248,11 +285,12 @@ function postRegister(data) {
     request.onreadystatechange = requestPost;
     request.send(JSON.stringify(data));
 }
-function postComment() {
+function postComment(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Comment");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPost;
-    request.send();
+    request.send(JSON.stringify(data));
 }
 function postLikeDislike() {
     request = new XMLHttpRequest();
@@ -299,9 +337,10 @@ function requestPost(event) {
             document.location.href = "http://localhost:4200/";
         }, 1000)
     } else if (path.includes("api/Post")) {
-        console.log(request.responseText);
+        getWhoAmI(2);
     } else if (path.includes("api/BanUser")) {
         document.getElementById("goBack").click();
-        console.log(request.responseText);
+    } else if (path.includes("api/Comment")) {
+        getWhoAmI(2);
     }
 }

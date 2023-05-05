@@ -52,7 +52,7 @@ function createNewPost() {
             content: postText.value
         }
         postPost(postInfo);
-        addPost(postTitel.value, postText.value, localStorage.getItem("username"), 0, 0);
+        //addPost(postTitel.value, postText.value, localStorage.getItem("username"), 0, 0);
         backArrow.click();
     }
 }
@@ -134,7 +134,11 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
         }
     });
     commentSend.addEventListener("click", function() {
-        createComment("Beb", commentInput.value, commentBody);
+        const data = {
+            postid: postId,
+            text: commentInput.value
+        }
+        postComment(data);
         commentInput.value = "";
     });
     postDelete.addEventListener("click", function() {
@@ -200,12 +204,12 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
     //Add comments on auto creation
     if (comments != 0) {
         for (let i = 0; i < comments.length; i++) {
-            createComment(comments[i].Author, comments[i].Text, commentBody);
+            createComment(comments[i].author, comments[i].text, commentBody, comments[i].id, role.role);
         }
     }
 }
 
-function createComment(author, text, commentField) {
+function createComment(author, text, commentField, commId = 0, role) {
     //Dom elements
     const commentDiv = document.createElement("div");
     const commentHeader = document.createElement("div");
@@ -224,12 +228,21 @@ function createComment(author, text, commentField) {
     commentEdit.className = "bg-[url('../materials/editing.png')] bg-cover w-[1rem] h-[1rem] ml-[0.5rem] mt-[0.2rem] cursor-pointer hover:bg-[rgba(252,39,128,0.4)]";
     //Functions 
     commentDelete.addEventListener("click", function() {
+        const id = {
+            commentid: commId
+        }
+        deleteComment(id);
         commentDiv.remove();
     });
     commentEdit.addEventListener("click", function() {
         if (commentText.contentEditable == "true") {
             commentText.contentEditable = "false";
             commentText.className = "break-words";
+            const data = {
+                commentid: commId,
+                text: commentText.innerText
+            };
+            putComment(data);
         } else {
             commentText.contentEditable = "true";
             commentText.className = "break-words bg-[rgba(252,39,128,0.4)]"
@@ -237,8 +250,15 @@ function createComment(author, text, commentField) {
     });
     //Appends
     commentHeader.appendChild(commentAuthor);
-    commentHeader.appendChild(commentDelete);
-    commentHeader.appendChild(commentEdit);
+    if (role == "User") {
+        if (commentAuthor.innerText == localStorage.getItem("username")) {
+            commentHeader.appendChild(commentDelete);
+            commentHeader.appendChild(commentEdit);
+        }  
+    } else {
+        commentHeader.appendChild(commentDelete);
+        commentHeader.appendChild(commentEdit);
+    }
     commentDiv.appendChild(commentHeader);
     commentDiv.appendChild(commentText);
     commentField.appendChild(commentDiv);
