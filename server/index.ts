@@ -56,8 +56,8 @@ class Backend {
 
     /*
     this._app.use(function (req, res) {
-      //res.setHeader('Content-Type', 'application/json')
-      res.setHeader('X-Content-Type-Options', 'none')
+      //res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+      //res.setHeader('X-Content-Type-Options', 'none')
 
       //res.end(JSON.stringify(req.body, null, 2))
     })
@@ -89,6 +89,16 @@ class Backend {
       res.sendFile(__dirname + '/client/HTML/index.html')
     })
   }
+
+  /*
+  private downloader(): void {
+    this._app.get('/Download', (req: Request, res: Response) => {
+      res.setHeader('Content-Type', 'application/x-www-form-urlencoded')
+      const __dirname = resolve(dirname(''))
+      res.sendFile(__dirname + '/client/HTML/index.html')
+    })
+  }
+  */
 
   private startServer(): void {
     this._server.listen(4200, () => {
