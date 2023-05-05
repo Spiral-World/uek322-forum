@@ -18,7 +18,7 @@ function showProfile() {
     allPostsLabel.innerText = "All posts:";
     //Styles
     header.className = "border-b-2";
-    backArrow.className = "bg-[url('../materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
+    backArrow.className = "bg-[url('../Materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
     name.className = "text-[1.5rem] mt-[1rem]";
     changeData.className = "bg-[rgba(252,39,128,0.3)] rounded-[0.4rem] hover:bg-[rgba(252,39,128,0.8)]";
     allPostsDiv.className = "mt-[2rem]";
@@ -74,7 +74,7 @@ function changeDataWindow() {
     `;
     //Styles
     header.className = "border-b-2";
-    backArrow.className = "bg-[url('../materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
+    backArrow.className = "bg-[url('../Materials/arrow.png')] bg-cover w-[2rem] h-[2rem] cursor-pointer hover:rounded-[2rem] hover:bg-[rgba(252,39,128,0.4)]";
     //Functions
         //Return
         backArrow.addEventListener("click", function() {
