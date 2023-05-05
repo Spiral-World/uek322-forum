@@ -205,11 +205,12 @@ function deletePost(postId) {
     request.onreadystatechange = requestDelete;
     request.send(JSON.stringify(postId));
 }
-function deleteComment() {
+function deleteComment(commId) {
     request = new XMLHttpRequest();
     request.open("DELETE", "http://localhost:4200/api/Comment");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestDelete;
-    request.send();
+    request.send(JSON.stringify(commId));
 }
 
 function requestDelete() {
@@ -248,11 +249,12 @@ function postRegister(data) {
     request.onreadystatechange = requestPost;
     request.send(JSON.stringify(data));
 }
-function postComment() {
+function postComment(data) {
     request = new XMLHttpRequest();
     request.open("POST", "http://localhost:4200/api/Comment");
+    request.setRequestHeader("Content-Type", "application/json");
     request.onreadystatechange = requestPost;
-    request.send();
+    request.send(JSON.stringify(data));
 }
 function postLikeDislike() {
     request = new XMLHttpRequest();
@@ -302,6 +304,8 @@ function requestPost(event) {
         console.log(request.responseText);
     } else if (path.includes("api/BanUser")) {
         document.getElementById("goBack").click();
+        console.log(request.responseText);
+    } else if (path.includes("api/Comment")) {
         console.log(request.responseText);
     }
 }

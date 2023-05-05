@@ -134,7 +134,12 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
         }
     });
     commentSend.addEventListener("click", function() {
-        createComment("Beb", commentInput.value, commentBody);
+        const data = {
+            postid: postId,
+            text: commentInput.value
+        }
+        postComment(data);
+        createComment(localStorage.getItem("username"), commentInput.value, commentBody, comments[0]);
         commentInput.value = "";
     });
     postDelete.addEventListener("click", function() {
@@ -200,12 +205,12 @@ function addPost(titel, text, author, likes, dislikes, comments = 0, postId = 0,
     //Add comments on auto creation
     if (comments != 0) {
         for (let i = 0; i < comments.length; i++) {
-            createComment(comments[i].Author, comments[i].Text, commentBody);
+            createComment(comments[i].Author, comments[i].Text, commentBody, comments[i]);
         }
     }
 }
 
-function createComment(author, text, commentField) {
+function createComment(author, text, commentField, comment = 0) {
     //Dom elements
     const commentDiv = document.createElement("div");
     const commentHeader = document.createElement("div");
